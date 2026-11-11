@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -14,6 +15,7 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -21,6 +23,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -69,11 +73,23 @@ internal fun IeltsPracticeScreen(
         val actualError = if (!matches) "回看记录与当前练习不一致，请重新读取。" else error
         var sourceExpanded by rememberSaveable { mutableStateOf(false) }
         val scroll = rememberLazyListState()
+        val focus = LocalFocusManager.current
+        val keyboard = LocalSoftwareKeyboardController.current
+        val inputGesture = remember { IeltsInputGesture() }
+        val finishInput = remember(focus, keyboard) { { focus.clearFocus(); keyboard?.hide(); Unit } }
+        LaunchedEffect(scroll, finishInput, inputGesture) {
+            // Editor-originated drags can propagate to the outer list. Do not
+            // treat them, or programmatic scrolling, as leaving writing mode.
+            scroll.interactionSource.interactions.collect { interaction ->
+                if (interaction is DragInteraction.Start && !inputGesture.beganInsideEditor) finishInput()
+            }
+        }
         LaunchedEffect(review?.submissionSha256) {
-            if (review != null) scroll.animateScrollToItem(0)
+            if (review != null) { finishInput(); scroll.animateScrollToItem(0) }
         }
 
-        Surface(modifier.fillMaxSize().testTag("ielts_practice"), color = MaterialTheme.colorScheme.background) {
+        Surface(modifier.fillMaxSize().observeIeltsInputStart(inputGesture, false).testTag("ielts_practice"),
+            color = MaterialTheme.colorScheme.background) {
             Column(Modifier.fillMaxSize().safeDrawingPadding().imePadding()) {
                 Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
                     Column(Modifier.weight(1f).padding(vertical = 12.dp)) {
@@ -88,7 +104,7 @@ internal fun IeltsPracticeScreen(
                     contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                     item(key = "article") {
                         Column(Modifier.fillMaxWidth()) {
-                            TextButton(onClick = { sourceExpanded = !sourceExpanded },
+                            TextButton(onClick = { finishInput(); sourceExpanded = !sourceExpanded },
                                 modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("ielts_source_toggle")) {
                                 Text(if (sourceExpanded) "收起原文" else "阅读原文")
                             }
@@ -110,11 +126,13 @@ internal fun IeltsPracticeScreen(
                         val reviewItem = review?.readingAnswers?.get(index)
                         IeltsQuestionCard(index + 1, question, reviewItem?.submittedAnswer ?: responseMap[question.questionId].orEmpty(),
                             editable = !locked, review = reviewItem, submissionIdentity = review?.submissionSha256,
-                            paragraphs = candidate.paragraphs, onAnswer = { value -> if (!locked) onAnswer(question.questionId, value) })
+                            paragraphs = candidate.paragraphs, finishInput = finishInput, inputGesture = inputGesture,
+                            onAnswer = { value -> if (!locked) onAnswer(question.questionId, value) })
                     }
                     if (task1 != null) item(key = "writing1") {
                         IeltsVisualWritingCard(task1, candidate.paragraphs, writingTask1Text.orEmpty(), writing1Words,
-                            editable = !locked, reviewed = review != null, onWriting = { if (!locked) onWritingTask1(it) })
+                            editable = !locked, reviewed = review != null, onWriting = { if (!locked) onWritingTask1(it) },
+                            onReadEvidence = finishInput, inputGesture = inputGesture)
                     }
                     if (candidate.writingTask1.reason == "insufficient_comparable_data") item(key = "writing1_unavailable") {
                         Text("Task 1 · 原文缺少适合图表比较的数据", style = MaterialTheme.typography.bodySmall,
@@ -122,7 +140,8 @@ internal fun IeltsPracticeScreen(
                     }
                     item(key = "writing") {
                         IeltsWritingCard(candidate.writingTask2, writingText, writingWords, editable = !locked,
-                            reviewed = review != null, onWriting = { if (!locked) onWriting(it) })
+                            reviewed = review != null, onWriting = { if (!locked) onWriting(it) },
+                            inputGesture = inputGesture)
                     }
                     item(key = "end") { Spacer(Modifier.height(8.dp)) }
                 }
@@ -153,7 +172,10 @@ internal fun IeltsPracticeScreen(
 
 @Composable
 private fun IeltsQuestionCard(number: Int, question: IeltsCandidateQuestion, response: String, editable: Boolean,
-    review: IeltsAnswerItem?, submissionIdentity: String?, paragraphs: List<IeltsParagraph>, onAnswer: (String) -> Unit) {
+    review: IeltsAnswerItem?, submissionIdentity: String?, paragraphs: List<IeltsParagraph>, finishInput: () -> Unit,
+    inputGesture: IeltsInputGesture,
+    onAnswer: (String) -> Unit) {
+    val selectAnswer: (String) -> Unit = { finishInput(); onAnswer(it) }
     Surface(Modifier.fillMaxWidth().testTag("ielts_question_${question.questionId}"),
         color = MaterialTheme.colorScheme.surfaceContainerLow, shape = RoundedCornerShape(12.dp)) {
         Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -162,19 +184,20 @@ private fun IeltsQuestionCard(number: Int, question: IeltsCandidateQuestion, res
             Text(question.prompt, Modifier.fillMaxWidth().testTag("ielts_prompt_${question.questionId}"),
                 style = MaterialTheme.typography.bodyLarge)
             when (question) {
-                is IeltsCandidateChoice -> IeltsOptions(question.questionId, question.options.map { it.optionId.name to "${it.optionId.name}. ${it.text}" }, response, editable, onAnswer)
+                is IeltsCandidateChoice -> IeltsOptions(question.questionId, question.options.map { it.optionId.name to "${it.optionId.name}. ${it.text}" }, response, editable, selectAnswer)
                 is IeltsCandidateInformation -> IeltsOptions(question.questionId,
-                    question.responseValues.map { it.wire to ieltsInformationLabel(it.wire) }, response, editable, onAnswer)
+                    question.responseValues.map { it.wire to ieltsInformationLabel(it.wire) }, response, editable, selectAnswer)
                 is IeltsCandidateViewQuestion -> IeltsOptions(question.questionId,
-                    question.responseValues.map { it.wire to ieltsViewLabel(it.wire) }, response, editable, onAnswer)
+                    question.responseValues.map { it.wire to ieltsViewLabel(it.wire) }, response, editable, selectAnswer)
                 is IeltsCandidateCompletion -> {
                     Text("从原文填写 · 最多 ${question.maxWords} 词${if (question.allowNumbers) "，可含数字" else "，不含数字"}",
                         style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.testTag("ielts_limit_${question.questionId}"))
                     OutlinedTextField(value = response, onValueChange = onAnswer, enabled = editable || review != null,
                         readOnly = !editable, label = { Text(if (review == null) "填写答案" else "你的作答") }, singleLine = true,
-                        modifier = Modifier.fillMaxWidth().testTag("ielts_input_${question.questionId}"),
-                        keyboardOptions = KeyboardOptions(autoCorrectEnabled = false, imeAction = ImeAction.Next),
+                        modifier = Modifier.fillMaxWidth().observeIeltsInputStart(inputGesture, true).testTag("ielts_input_${question.questionId}"),
+                        keyboardOptions = KeyboardOptions(autoCorrectEnabled = false, imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(onDone = { finishInput() }),
                         shape = RoundedCornerShape(8.dp))
                 }
             }
@@ -248,7 +271,7 @@ private fun IeltsQuestionReview(question: IeltsCandidateQuestion, review: IeltsA
 
 @Composable
 private fun IeltsWritingCard(task: IeltsCandidateWriting, text: String, words: Int?, editable: Boolean, reviewed: Boolean,
-    onWriting: (String) -> Unit) {
+    onWriting: (String) -> Unit, inputGesture: IeltsInputGesture) {
     Surface(Modifier.fillMaxWidth().testTag("ielts_writing"), color = MaterialTheme.colorScheme.surfaceContainerLow,
         shape = RoundedCornerShape(12.dp)) {
         Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -258,7 +281,8 @@ private fun IeltsWritingCard(task: IeltsCandidateWriting, text: String, words: I
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
             OutlinedTextField(value = text, onValueChange = onWriting, enabled = editable || reviewed, readOnly = !editable,
                 label = { Text(if (reviewed) "已提交作文" else "写下你的观点") }, minLines = 5, maxLines = 10,
-                modifier = Modifier.fillMaxWidth().testTag("ielts_writing_input"), shape = RoundedCornerShape(8.dp))
+                modifier = Modifier.fillMaxWidth().observeIeltsInputStart(inputGesture, true).testTag("ielts_writing_input"),
+                shape = RoundedCornerShape(8.dp))
             Text(if (words == null) "字数暂不可用" else "$words 词 / ${task.minimumWords} 词要求",
                 Modifier.fillMaxWidth().testTag("ielts_writing_count"), style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)

@@ -56,8 +56,10 @@ internal fun IeltsVisualChart(visual: IeltsVisual, modifier: Modifier = Modifier
 
 @Composable
 internal fun IeltsVisualWritingCard(task: IeltsVisualTask, paragraphs: List<IeltsParagraph>, writing: String,
-    words: Int?, editable: Boolean, reviewed: Boolean, onWriting: (String) -> Unit) {
+    words: Int?, editable: Boolean, reviewed: Boolean, onWriting: (String) -> Unit,
+    onReadEvidence: () -> Unit = {}, inputGesture: IeltsInputGesture? = null) {
     var evidence by rememberSaveable(task.requestSha256, task.taskId) { mutableStateOf(false) }
+    val editorGesture = inputGesture?.let { Modifier.observeIeltsInputStart(it, true) } ?: Modifier
     Surface(Modifier.fillMaxWidth().testTag("ielts_writing_task1"), color = MaterialTheme.colorScheme.surfaceContainerLow,
         shape = RoundedCornerShape(12.dp)) {
         Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -66,14 +68,15 @@ internal fun IeltsVisualWritingCard(task: IeltsVisualTask, paragraphs: List<Ielt
             IeltsVisualChart(task.visual)
             Text(IeltsVisualContract.INSTRUCTION, style = MaterialTheme.typography.bodyLarge.copy(fontFamily = ReadingSerif))
             if (editable) OutlinedTextField(value = writing, onValueChange = onWriting,
-                modifier = Modifier.fillMaxWidth().testTag("ielts_writing1_input"), minLines = 7,
+                modifier = Modifier.fillMaxWidth().then(editorGesture).testTag("ielts_writing1_input"), minLines = 7,
                 label = { Text("写作") }, textStyle = MaterialTheme.typography.bodyLarge.copy(fontFamily = ReadingSerif))
             else Text(writing.ifBlank { "未填写" }, Modifier.fillMaxWidth().testTag("ielts_writing1_saved"),
                 style = MaterialTheme.typography.bodyLarge.copy(fontFamily = ReadingSerif))
             Text("${words ?: 0} 词", Modifier.testTag("ielts_writing1_words"), style = MaterialTheme.typography.labelMedium)
             if (reviewed && (words ?: 0) < 150) Text("尚未达到 150 词", style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
-            TextButton(onClick = { evidence = !evidence }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
+            TextButton(onClick = { onReadEvidence(); evidence = !evidence },
+                modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("ielts_visual_evidence_toggle")) {
                 Text(if (evidence) "收起数据出处" else "数据出处")
             }
             IeltsDisclosure(evidence) {

@@ -6,7 +6,7 @@ android {
     defaultConfig {
         applicationId = "dev.lexicon.ide"
         minSdk = 36; targetSdk = 36
-        versionCode = 40; versionName = "1.36.0"
+        versionCode = 41; versionName = "1.36.1-dev144"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures { compose = true; buildConfig = true }
