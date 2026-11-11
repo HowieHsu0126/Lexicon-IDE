@@ -1,0 +1,253 @@
+{
+  "request": {
+    "schema": "lexicon.ielts.request.v1",
+    "request_id": "request-offline-1",
+    "article_id": "article-offline-1",
+    "body_hash": "4de3d79abb8114e9ae31c279fc404256fff53605c47e7e544745098ee0f6837a",
+    "paragraphs": [
+      {
+        "paragraph_id": "p1",
+        "start": 0,
+        "end": 72,
+        "text": "🔬 The council approved solar panels. The council approved solar panels."
+      },
+      {
+        "paragraph_id": "p2",
+        "start": 74,
+        "end": 143,
+        "text": "The writer argues that public investment should support clean energy."
+      },
+      {
+        "paragraph_id": "visual-p1",
+        "start": 145,
+        "end": 301,
+        "text": "At the Riverside library, weekly visits rose from 1,200 in 2024 to 1,650 in 2025. At the Hill library, weekly visits rose from 900 in 2024 to 1,100 in 2025."
+      }
+    ],
+    "style_blueprint_sha256": "5d63cf2c109c250b9045f1e05a6f68caaccfb6994360e20d485c95869ac0fe9c",
+    "style_sources": [
+      {
+        "source_id": "style-fixture",
+        "sha256": "a712350bade2884871a31eaf7e0298090d9db41163b36aa18f368e3667d9fb4d",
+        "summary": "Format metadata fixture, not an official source retrieval.",
+        "scope": "official_public_sample_format"
+      }
+    ],
+    "reading_requests": [
+      {
+        "question_id": "q1",
+        "type": "multiple_choice"
+      },
+      {
+        "question_id": "q2",
+        "type": "identifying_information"
+      },
+      {
+        "question_id": "q3",
+        "type": "identifying_writers_views"
+      },
+      {
+        "question_id": "q4",
+        "type": "short_text_completion",
+        "max_words": 2,
+        "allow_numbers": false
+      }
+    ],
+    "writing_task2_request": {
+      "task_id": "w2",
+      "task_type": "extent_of_agreement"
+    },
+    "writing_task1_request": {
+      "task_id": "w1",
+      "policy": "source_numeric_visual_v1"
+    }
+  },
+  "package": {
+    "schema": "lexicon.ielts.package.v1",
+    "request_id": "request-offline-1",
+    "article_id": "article-offline-1",
+    "body_hash": "4de3d79abb8114e9ae31c279fc404256fff53605c47e7e544745098ee0f6837a",
+    "request_sha256": "51d617c4117a03a62cb5c35fda1ce605eb3e00b2ea6cd3558aa16839bfda9c8c",
+    "label": "AI 模拟练习",
+    "style_source_ids": [
+      "style-fixture"
+    ],
+    "reading_questions": [
+      {
+        "question_id": "q1",
+        "type": "multiple_choice",
+        "prompt": "What did the council approve?",
+        "options": [
+          {
+            "option_id": "A",
+            "text": "Solar panels"
+          },
+          {
+            "option_id": "B",
+            "text": "A school"
+          },
+          {
+            "option_id": "C",
+            "text": "A railway"
+          },
+          {
+            "option_id": "D",
+            "text": "A hospital"
+          }
+        ],
+        "number_of_answers": 1,
+        "answer": "A",
+        "explanation": "SECRET_RATIONALE_Q1",
+        "source_refs": [
+          {
+            "paragraph_id": "p1",
+            "start": 38,
+            "end": 72,
+            "quote": "The council approved solar panels."
+          }
+        ]
+      },
+      {
+        "question_id": "q2",
+        "type": "identifying_information",
+        "prompt": "The council approved equipment associated with solar energy.",
+        "answer": "true",
+        "explanation": "PRIVATE_INFORMATION_EXPLANATION",
+        "source_refs": [
+          {
+            "paragraph_id": "p1",
+            "start": 3,
+            "end": 37,
+            "quote": "The council approved solar panels."
+          }
+        ]
+      },
+      {
+        "question_id": "q3",
+        "type": "identifying_writers_views",
+        "prompt": "The writer believes the budget should double next year.",
+        "answer": "not_given",
+        "explanation": "PRIVATE_VIEW_EXPLANATION",
+        "source_refs": [],
+        "reviewed_paragraph_ids": [
+          "p1",
+          "p2",
+          "visual-p1"
+        ],
+        "absence_justification": "PRIVATE_NG_JUSTIFICATION"
+      },
+      {
+        "question_id": "q4",
+        "type": "short_text_completion",
+        "prompt": "The council approved ____.",
+        "max_words": 2,
+        "allow_numbers": false,
+        "normalization_rule": "lexicon-extractive-v1",
+        "answer": "solar panels",
+        "explanation": "PRIVATE_COMPLETION_EXPLANATION",
+        "source_refs": [
+          {
+            "paragraph_id": "p1",
+            "start": 24,
+            "end": 36,
+            "quote": "solar panels"
+          }
+        ]
+      }
+    ],
+    "writing_task2": {
+      "task_id": "w2",
+      "task_type": "extent_of_agreement",
+      "prompt": "Public funds should prioritise clean energy. To what extent do you agree or disagree?",
+      "minimum_words": 250,
+      "suggested_minutes": 40,
+      "source_refs": [
+        {
+          "paragraph_id": "p2",
+          "start": 74,
+          "end": 143,
+          "quote": "The writer argues that public investment should support clean energy."
+        }
+      ]
+    },
+    "writing_task1": {
+      "status": "available",
+      "task": {
+        "schema": "lexicon.ielts.visual-task.v1",
+        "task_id": "w1",
+        "request_sha256": "51d617c4117a03a62cb5c35fda1ce605eb3e00b2ea6cd3558aa16839bfda9c8c",
+        "status": "available",
+        "visual": {
+          "schema": "lexicon.ielts.visual.v1",
+          "kind": "grouped_bar",
+          "title": "Weekly library visits in 2024 and 2025",
+          "unit": "visits per week",
+          "categories": [
+            "2024",
+            "2025"
+          ],
+          "series": [
+            {
+              "label": "Riverside",
+              "cells": [
+                {
+                  "value": "1200",
+                  "source_ref": {
+                    "paragraph_id": "visual-p1",
+                    "start": 195,
+                    "end": 200,
+                    "quote": "1,200"
+                  }
+                },
+                {
+                  "value": "1650",
+                  "source_ref": {
+                    "paragraph_id": "visual-p1",
+                    "start": 212,
+                    "end": 217,
+                    "quote": "1,650"
+                  }
+                }
+              ]
+            },
+            {
+              "label": "Hill",
+              "cells": [
+                {
+                  "value": "900",
+                  "source_ref": {
+                    "paragraph_id": "visual-p1",
+                    "start": 272,
+                    "end": 275,
+                    "quote": "900"
+                  }
+                },
+                {
+                  "value": "1100",
+                  "source_ref": {
+                    "paragraph_id": "visual-p1",
+                    "start": 287,
+                    "end": 292,
+                    "quote": "1,100"
+                  }
+                }
+              ]
+            }
+          ],
+          "context_refs": [
+            {
+              "paragraph_id": "visual-p1",
+              "start": 145,
+              "end": 301,
+              "quote": "At the Riverside library, weekly visits rose from 1,200 in 2024 to 1,650 in 2025. At the Hill library, weekly visits rose from 900 in 2024 to 1,100 in 2025."
+            }
+          ]
+        },
+        "prompt": "Weekly library visits in 2024 and 2025\n\nSummarise the information by selecting and reporting the main features, and make comparisons where relevant.",
+        "minimum_words": 150,
+        "suggested_minutes": 20
+      }
+    }
+  },
+  "visual_sha256": "37e1a10c3a4c832b8879cbe8c17f61975df389e2532181a0af2d76b7385de25f"
+}

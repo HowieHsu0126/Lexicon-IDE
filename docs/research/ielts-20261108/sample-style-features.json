@@ -1,0 +1,138 @@
+{
+  "status": "observed",
+  "source_bundle": "cambridge-samples",
+  "zip_sha256": "586fa282be76d0a00a5ab36ca400868d81535d7d50d2e8ff905839ae377e399d",
+  "retrieved_at_utc": "2026-11-08T06:40:53.730777+00:00",
+  "features": [
+    {
+      "name": "ielts-sample-papers/Academic Reading/115012_Academic_Reading_sample_task_-_Diagram_label_completion__2_.pdf",
+      "pdf_sha256": "6f381ee14d77b4dd888492450187c11a1e50bfbdb73cf5e31eaa6841d5a19742",
+      "pages": 3,
+      "option_markers_found": [],
+      "declared_minimum_words": null,
+      "time_hint_minutes": null,
+      "observed_completion_word_limits": [],
+      "writing_dimensions_found": [],
+      "task2_prompt_shapes_found": []
+    },
+    {
+      "name": "ielts-sample-papers/Academic Reading/115013_Academic_Reading_sample_task_-_Identifying_information__2_.pdf",
+      "pdf_sha256": "da98df2a77ee5dbe4df10314af2dc0576ead98106658e5ff703aa8bd78b274bd",
+      "pages": 5,
+      "option_markers_found": [],
+      "declared_minimum_words": null,
+      "time_hint_minutes": null,
+      "observed_completion_word_limits": [],
+      "writing_dimensions_found": [],
+      "task2_prompt_shapes_found": []
+    },
+    {
+      "name": "ielts-sample-papers/Academic Reading/115014_Academic_Reading_sample_task_-_Identifying_writer_s_views__2_.pdf",
+      "pdf_sha256": "d9a3d8545dd8e2896b2242e8319c6c5ffd5db1aac63e46ac7548c6b02aaf9e77",
+      "pages": 4,
+      "option_markers_found": [
+        "NOT GIVEN",
+        "YES",
+        "NO"
+      ],
+      "declared_minimum_words": null,
+      "time_hint_minutes": null,
+      "observed_completion_word_limits": [],
+      "writing_dimensions_found": [],
+      "task2_prompt_shapes_found": []
+    },
+    {
+      "name": "ielts-sample-papers/Academic Reading/115015_Academic_Reading_sample_task_-_Matching_features__2_.pdf",
+      "pdf_sha256": "a4a4b5eade2c96e34df8c552042bc289385b6f79b6afeec2b74556a140bb0909",
+      "pages": 3,
+      "option_markers_found": [],
+      "declared_minimum_words": null,
+      "time_hint_minutes": null,
+      "observed_completion_word_limits": [],
+      "writing_dimensions_found": [],
+      "task2_prompt_shapes_found": []
+    },
+    {
+      "name": "ielts-sample-papers/Academic Reading/115016_Academic_Reading_sample_task_-_Matching_headings__2_.pdf",
+      "pdf_sha256": "6c3607577908b01c7a701be44bb53542bbac3fc3af6132bac2237a8f187e5d42",
+      "pages": 4,
+      "option_markers_found": [],
+      "declared_minimum_words": null,
+      "time_hint_minutes": null,
+      "observed_completion_word_limits": [],
+      "writing_dimensions_found": [],
+      "task2_prompt_shapes_found": []
+    },
+    {
+      "name": "ielts-sample-papers/Academic Reading/115017_Academic_Reading_sample_task_-_Multiple_choice.pdf",
+      "pdf_sha256": "11057e7a1cfbf8b38794be0a6b5a88bc3acc780f5daed2aac2e7f26d38ac8473",
+      "pages": 3,
+      "option_markers_found": [],
+      "declared_minimum_words": null,
+      "time_hint_minutes": null,
+      "observed_completion_word_limits": [],
+      "writing_dimensions_found": [],
+      "task2_prompt_shapes_found": []
+    },
+    {
+      "name": "ielts-sample-papers/Academic Reading/115018_Academic_Reading_sample_task_-_Table_completion__2_.pdf",
+      "pdf_sha256": "a2e1e00fed9ba7249f4db1ea0f229993d20878d1b328319d9a22d2910e734b52",
+      "pages": 3,
+      "option_markers_found": [
+        "NO"
+      ],
+      "declared_minimum_words": null,
+      "time_hint_minutes": null,
+      "observed_completion_word_limits": [
+        3
+      ],
+      "writing_dimensions_found": [],
+      "task2_prompt_shapes_found": []
+    },
+    {
+      "name": "ielts-sample-papers/Academic Writing/113313_AC_sample_scripts.pdf",
+      "pdf_sha256": "4d3b54c16ea4664c1b0189d58d2f361c2eeba87968ab58a03c7e606952c8d9b1",
+      "pages": 12,
+      "option_markers_found": [],
+      "declared_minimum_words": 250,
+      "time_hint_minutes": null,
+      "observed_completion_word_limits": [],
+      "writing_dimensions_found": [
+        "task achievement",
+        "task response",
+        "coherence and cohesion",
+        "lexical resource",
+        "grammatical range and accuracy"
+      ],
+      "task2_prompt_shapes_found": []
+    },
+    {
+      "name": "ielts-sample-papers/Academic Writing/115027_Academic_Writing_sample_task_-_Task_1.pdf",
+      "pdf_sha256": "817c88291b893cd6d27d52931ebaa5611ea41f2e902b6fb1afa2519683f51e23",
+      "pages": 1,
+      "option_markers_found": [],
+      "declared_minimum_words": 150,
+      "time_hint_minutes": 20,
+      "observed_completion_word_limits": [],
+      "writing_dimensions_found": [],
+      "task2_prompt_shapes_found": []
+    },
+    {
+      "name": "ielts-sample-papers/Academic Writing/115028_Academic_Writing_sample_task_-_Task_2.pdf",
+      "pdf_sha256": "517ed812097338f32583a3ebe16d447cf9a85ea90409f4469ef2a1dcb1618f18",
+      "pages": 1,
+      "option_markers_found": [],
+      "declared_minimum_words": 250,
+      "time_hint_minutes": 40,
+      "observed_completion_word_limits": [],
+      "writing_dimensions_found": [],
+      "task2_prompt_shapes_found": [
+        "agree_disagree",
+        "extent"
+      ]
+    }
+  ],
+  "full_asset_saved": false,
+  "original_questions_reproduced": false,
+  "previous_inspection_failure": "An earlier unsaved inspection included an archive directory entry; this read selects only .pdf members."
+}

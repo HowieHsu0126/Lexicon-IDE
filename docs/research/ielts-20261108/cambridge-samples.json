@@ -1,0 +1,275 @@
+{
+  "id": "cambridge-samples",
+  "requested_url": "https://www.cambridgeenglish.org/Images/23435-ielts-sample-papers.zip",
+  "retrieved_at_utc": "2026-11-08T06:18:17.096014+00:00",
+  "status": "retrieved",
+  "method": "Unauthenticated HTTPS GET; no browser cookies or credentials",
+  "full_asset_saved": false,
+  "status_code": 200,
+  "final_url": "https://www.cambridgeenglish.org/Images/23435-ielts-sample-papers.zip",
+  "content_type": "application/x-zip-compressed",
+  "http_date": "Sun, 08 Nov 2026 06:18:05 GMT",
+  "last_modified": "Mon, 11 May 2026 09:09:23 GMT",
+  "response_bytes": 8210391,
+  "response_sha256": "586fa282be76d0a00a5ab36ca400868d81535d7d50d2e8ff905839ae377e399d",
+  "crc_valid": true,
+  "members": [
+    {
+      "name": "ielts-sample-papers/Academic Reading/115012_Academic_Reading_sample_task_-_Diagram_label_completion__2_.pdf",
+      "bytes": 60506
+    },
+    {
+      "name": "ielts-sample-papers/Academic Reading/115013_Academic_Reading_sample_task_-_Identifying_information__2_.pdf",
+      "bytes": 35214
+    },
+    {
+      "name": "ielts-sample-papers/Academic Reading/115014_Academic_Reading_sample_task_-_Identifying_writer_s_views__2_.pdf",
+      "bytes": 55969
+    },
+    {
+      "name": "ielts-sample-papers/Academic Reading/115015_Academic_Reading_sample_task_-_Matching_features__2_.pdf",
+      "bytes": 21610
+    },
+    {
+      "name": "ielts-sample-papers/Academic Reading/115016_Academic_Reading_sample_task_-_Matching_headings__2_.pdf",
+      "bytes": 26424
+    },
+    {
+      "name": "ielts-sample-papers/Academic Reading/115017_Academic_Reading_sample_task_-_Multiple_choice.pdf",
+      "bytes": 20987
+    },
+    {
+      "name": "ielts-sample-papers/Academic Reading/115018_Academic_Reading_sample_task_-_Table_completion__2_.pdf",
+      "bytes": 59045
+    },
+    {
+      "name": "ielts-sample-papers/Academic Writing/113313_AC_sample_scripts.pdf",
+      "bytes": 1419343
+    },
+    {
+      "name": "ielts-sample-papers/Academic Writing/115027_Academic_Writing_sample_task_-_Task_1.pdf",
+      "bytes": 34038
+    },
+    {
+      "name": "ielts-sample-papers/Academic Writing/115028_Academic_Writing_sample_task_-_Task_2.pdf",
+      "bytes": 11299
+    },
+    {
+      "name": "ielts-sample-papers/General Training Reading/115019_General_Training_Reading_sample_task_-_Flow-chart_completion.pdf",
+      "bytes": 40141
+    },
+    {
+      "name": "ielts-sample-papers/General Training Reading/115020_General_Training_Reading_sample_task_-_Identifying_information.pdf",
+      "bytes": 99260
+    },
+    {
+      "name": "ielts-sample-papers/General Training Reading/115021_General_Training_Reading_sample_task_-_Matching__information.pdf",
+      "bytes": 43298
+    },
+    {
+      "name": "ielts-sample-papers/General Training Reading/115022_General_Training_Reading_sample_task_-_Matching_features.pdf",
+      "bytes": 31989
+    },
+    {
+      "name": "ielts-sample-papers/General Training Reading/115023_General_Training_Reading_sample_task_-_Matching_headings.pdf",
+      "bytes": 30799
+    },
+    {
+      "name": "ielts-sample-papers/General Training Reading/115024_General_Training_Reading_sample_task_-_Multiple_choice.pdf",
+      "bytes": 24436
+    },
+    {
+      "name": "ielts-sample-papers/General Training Reading/115025_General_Training_Reading_sample_task_-_Sentence_completion.pdf",
+      "bytes": 19267
+    },
+    {
+      "name": "ielts-sample-papers/General Training Reading/115026_General_Training_Reading_sample_task_-_Short-answer_questions.pdf",
+      "bytes": 18313
+    },
+    {
+      "name": "ielts-sample-papers/General Training Writing/115004_General_Training_Writing_sample_scripts.pdf",
+      "bytes": 868812
+    },
+    {
+      "name": "ielts-sample-papers/General Training Writing/115029_General_Training_Writing_sample_task_-_Task_1.pdf",
+      "bytes": 21341
+    },
+    {
+      "name": "ielts-sample-papers/General Training Writing/115030_General_Training_Writing_sample_task_-_Task_2.pdf",
+      "bytes": 11134
+    },
+    {
+      "name": "ielts-sample-papers/Listening/115005_Listening_sample_task_-_Form_completion.pdf",
+      "bytes": 59389
+    },
+    {
+      "name": "ielts-sample-papers/Listening/115006_Listening_sample_task_-_Matching__example_1_.pdf",
+      "bytes": 21034
+    },
+    {
+      "name": "ielts-sample-papers/Listening/115007_Listening_sample_task_-_Matching__example_2_.pdf",
+      "bytes": 21191
+    },
+    {
+      "name": "ielts-sample-papers/Listening/115008_Listening_sample_task_-_Multiple_choice.pdf",
+      "bytes": 16268
+    },
+    {
+      "name": "ielts-sample-papers/Listening/115009_Listening_sample_task_-_Plan_map_diagram_labelling.pdf",
+      "bytes": 24803
+    },
+    {
+      "name": "ielts-sample-papers/Listening/115010_Listening_sample_task_-_Sentence_completion.pdf",
+      "bytes": 17315
+    },
+    {
+      "name": "ielts-sample-papers/Listening/115011_Listening_sample_task_-_Short-answer_questions.pdf",
+      "bytes": 24731
+    },
+    {
+      "name": "ielts-sample-papers/Speaking/115041_Speaking_sample_task_-_Part_1.pdf",
+      "bytes": 20998
+    },
+    {
+      "name": "ielts-sample-papers/Speaking/115045_Speaking_sample_task_-_Part_1_transcript.pdf",
+      "bytes": 12410
+    },
+    {
+      "name": "ielts-sample-papers/Speaking/115047_Speaking_sample_task_-_Part_2.pdf",
+      "bytes": 20085
+    },
+    {
+      "name": "ielts-sample-papers/Speaking/115051_Speaking_sample_task_-_Part_2_transcript.pdf",
+      "bytes": 11087
+    },
+    {
+      "name": "ielts-sample-papers/Speaking/115053_Speaking_sample_task_-_Part_3.pdf",
+      "bytes": 18323
+    },
+    {
+      "name": "ielts-sample-papers/Speaking/115057_Speaking_sample_task_-_Part_3_transcript.pdf",
+      "bytes": 12701
+    },
+    {
+      "name": "ielts-sample-papers/Tasks Auido/113200_Sample_Task_Type_1_Recording.mp3",
+      "bytes": 1221172
+    },
+    {
+      "name": "ielts-sample-papers/Tasks Auido/113203_Sample_Task_Type_2_Recording.mp3",
+      "bytes": 401954
+    },
+    {
+      "name": "ielts-sample-papers/Tasks Auido/113205_Sample_Task_Type_3_Recording.mp3",
+      "bytes": 573986
+    },
+    {
+      "name": "ielts-sample-papers/Tasks Auido/113207_IELTS_Edited_Tt_4.mp3",
+      "bytes": 549410
+    },
+    {
+      "name": "ielts-sample-papers/Tasks Auido/115043_IELTS_Speaking_Sample_Part_1_Recording.mp3",
+      "bytes": 631330
+    },
+    {
+      "name": "ielts-sample-papers/Tasks Auido/115049_IELTS_Speaking_Sample_Part_2_Recording.mp3",
+      "bytes": 762402
+    },
+    {
+      "name": "ielts-sample-papers/Tasks Auido/115055_IELTS_Speaking_Sample_Part_3_Recording.mp3",
+      "bytes": 1245730
+    }
+  ],
+  "parsed_samples": [
+    {
+      "name": "ielts-sample-papers/Academic Reading/115012_Academic_Reading_sample_task_-_Diagram_label_completion__2_.pdf",
+      "pdf_sha256": "6f381ee14d77b4dd888492450187c11a1e50bfbdb73cf5e31eaa6841d5a19742",
+      "pages": 3,
+      "excerpt": "Academic Reading sample task – Diagram label completion Academic Reading sample task – Diagram label completion Academic Reading sample task – Diagram label completion",
+      "excerpt_words": 24,
+      "declares_150_words": false,
+      "declares_250_words": false,
+      "full_pdf_saved": false
+    },
+    {
+      "name": "ielts-sample-papers/Academic Reading/115013_Academic_Reading_sample_task_-_Identifying_information__2_.pdf",
+      "pdf_sha256": "da98df2a77ee5dbe4df10314af2dc0576ead98106658e5ff703aa8bd78b274bd",
+      "pages": 5,
+      "excerpt": "Academic Reading sample task – Identifying information Academic Reading sample task – Identifying information Academic Reading sample task – Identifying information Academic Reading sample task",
+      "excerpt_words": 25,
+      "declares_150_words": false,
+      "declares_250_words": false,
+      "full_pdf_saved": false
+    },
+    {
+      "name": "ielts-sample-papers/Academic Reading/115014_Academic_Reading_sample_task_-_Identifying_writer_s_views__2_.pdf",
+      "pdf_sha256": "d9a3d8545dd8e2896b2242e8319c6c5ffd5db1aac63e46ac7548c6b02aaf9e77",
+      "pages": 4,
+      "excerpt": "Academic Reading sample task – Identifying writer’s views/claims Academic Reading sample task – Identifying writer’s views/claims Academic Reading sample task – Identifying writer’s views/claims NOT",
+      "excerpt_words": 25,
+      "declares_150_words": false,
+      "declares_250_words": false,
+      "full_pdf_saved": false
+    },
+    {
+      "name": "ielts-sample-papers/Academic Reading/115015_Academic_Reading_sample_task_-_Matching_features__2_.pdf",
+      "pdf_sha256": "a4a4b5eade2c96e34df8c552042bc289385b6f79b6afeec2b74556a140bb0909",
+      "pages": 3,
+      "excerpt": "Academic Reading sample task – Matching features Academic Reading sample task – Matching features Academic Reading sample task – Matching features",
+      "excerpt_words": 21,
+      "declares_150_words": false,
+      "declares_250_words": false,
+      "full_pdf_saved": false
+    },
+    {
+      "name": "ielts-sample-papers/Academic Reading/115016_Academic_Reading_sample_task_-_Matching_headings__2_.pdf",
+      "pdf_sha256": "6c3607577908b01c7a701be44bb53542bbac3fc3af6132bac2237a8f187e5d42",
+      "pages": 4,
+      "excerpt": "Academic Reading sample task – Matching headings Academic Reading sample task – Matching headings Academic Reading sample task – Matching headings Academic Reading sample task",
+      "excerpt_words": 25,
+      "declares_150_words": false,
+      "declares_250_words": false,
+      "full_pdf_saved": false
+    },
+    {
+      "name": "ielts-sample-papers/Academic Reading/115017_Academic_Reading_sample_task_-_Multiple_choice.pdf",
+      "pdf_sha256": "11057e7a1cfbf8b38794be0a6b5a88bc3acc780f5daed2aac2e7f26d38ac8473",
+      "pages": 3,
+      "excerpt": "Academic Reading sample task – Multiple choice Academic Reading sample task – Multiple choice Academic Reading sample task – Multiple choice",
+      "excerpt_words": 21,
+      "declares_150_words": false,
+      "declares_250_words": false,
+      "full_pdf_saved": false
+    },
+    {
+      "name": "ielts-sample-papers/Academic Reading/115018_Academic_Reading_sample_task_-_Table_completion__2_.pdf",
+      "pdf_sha256": "a2e1e00fed9ba7249f4db1ea0f229993d20878d1b328319d9a22d2910e734b52",
+      "pages": 3,
+      "excerpt": "Academic Reading sample task – Table completion Academic Reading sample task – Table completion Choose NO MORE THAN THREE WORDS from the passage for each",
+      "excerpt_words": 25,
+      "declares_150_words": false,
+      "declares_250_words": false,
+      "full_pdf_saved": false
+    },
+    {
+      "name": "ielts-sample-papers/Academic Writing/115027_Academic_Writing_sample_task_-_Task_1.pdf",
+      "pdf_sha256": "817c88291b893cd6d27d52931ebaa5611ea41f2e902b6fb1afa2519683f51e23",
+      "pages": 1,
+      "excerpt": "You should spend about 20 minutes on this task. Write at least 150 words.",
+      "excerpt_words": 14,
+      "declares_150_words": true,
+      "declares_250_words": false,
+      "full_pdf_saved": false
+    },
+    {
+      "name": "ielts-sample-papers/Academic Writing/115028_Academic_Writing_sample_task_-_Task_2.pdf",
+      "pdf_sha256": "517ed812097338f32583a3ebe16d447cf9a85ea90409f4469ef2a1dcb1618f18",
+      "pages": 1,
+      "excerpt": "You should spend about 40 minutes on this task. Write at least 250 words.",
+      "excerpt_words": 14,
+      "declares_150_words": false,
+      "declares_250_words": true,
+      "full_pdf_saved": false
+    }
+  ],
+  "recent_exam_corpus": false
+}

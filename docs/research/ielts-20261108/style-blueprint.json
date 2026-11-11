@@ -1,0 +1,302 @@
+{
+  "schema": "lexicon.ielts.style-blueprint.v1",
+  "status": "verified_public_sample_blueprint_not_implemented",
+  "as_of": "2026-11-08",
+  "exam_family": "ielts_academic",
+  "purpose": "Generate original practice items and validate their structure; do not reproduce source questions.",
+  "coverage": {
+    "requested_publication_years": [
+      2024,
+      2025,
+      2026
+    ],
+    "bibliography": {
+      "verified_product_links": [
+        {
+          "title": "IELTS 21 Academic",
+          "isbn": "9781009826723",
+          "source_id": "cambridge-preparation",
+          "publication_year": null,
+          "year_verified": false
+        }
+      ],
+      "unverified_edition_year_bindings": [
+        "19",
+        "20",
+        "21"
+      ],
+      "recent_three_year_metadata_complete": false
+    },
+    "example_text": {
+      "source_id": "cambridge-samples",
+      "bundle_sha256": "586fa282be76d0a00a5ab36ca400868d81535d7d50d2e8ff905839ae377e399d",
+      "academic_reading_task_samples_parsed": 7,
+      "academic_writing_task_samples_parsed": 2,
+      "academic_writing_script_and_commentary_documents_parsed": 1,
+      "sample_publication_years_verified": false,
+      "cambridge_19_full_text_read": false,
+      "cambridge_20_full_text_read": false,
+      "cambridge_21_full_text_read": false,
+      "recent_three_year_style_coverage": false
+    }
+  },
+  "source_separation": {
+    "official_reference_ids": [
+      "cambridge-preparation",
+      "cambridge-samples",
+      "cambridge-academic-faqs",
+      "cambridge-test-taker-guide-bounded-15mb"
+    ],
+    "generated_material_label": "AI 模拟练习",
+    "current_article_reference_required": true,
+    "unknown_metadata_policy": "preserve_null_do_not_infer"
+  },
+  "format": {
+    "single_passage_practice": {
+      "display_actual_question_count": true,
+      "full_exam_score_conversion": false
+    },
+    "full_academic_reading": {
+      "passages": 3,
+      "questions": 40,
+      "minutes": 60,
+      "source_id": "cambridge-academic-faqs"
+    },
+    "academic_writing": {
+      "tasks": 2,
+      "minutes": 60,
+      "source_id": "cambridge-test-taker-guide-bounded-15mb"
+    }
+  },
+  "reading": {
+    "stem_style": [
+      "Name one task type and state the required response form before the numbered items.",
+      "Preserve the full unchanged source passage and group questions with a shared instruction.",
+      "Use unique item IDs; explain any reuse of options and every completion word limit."
+    ],
+    "types": [
+      {
+        "id": "identifying_information",
+        "response_mode": "three_way_choice",
+        "answer_values": [
+          "true",
+          "false",
+          "not_given"
+        ],
+        "claim_target": "information_in_passage",
+        "source": {
+          "source_id": "cambridge-samples",
+          "member": "ielts-sample-papers/Academic Reading/115013_Academic_Reading_sample_task_-_Identifying_information__2_.pdf",
+          "sha256": "da98df2a77ee5dbe4df10314af2dc0576ead98106658e5ff703aa8bd78b274bd"
+        }
+      },
+      {
+        "id": "identifying_writers_views",
+        "response_mode": "three_way_choice",
+        "answer_values": [
+          "yes",
+          "no",
+          "not_given"
+        ],
+        "claim_target": "writers_view_or_claim",
+        "source": {
+          "source_id": "cambridge-samples",
+          "member": "ielts-sample-papers/Academic Reading/115014_Academic_Reading_sample_task_-_Identifying_writer_s_views__2_.pdf",
+          "sha256": "d9a3d8545dd8e2896b2242e8319c6c5ffd5db1aac63e46ac7548c6b02aaf9e77"
+        }
+      },
+      {
+        "id": "multiple_choice",
+        "response_mode": "option_ids",
+        "required_per_group": [
+          "options",
+          "number_of_answers"
+        ],
+        "source": {
+          "source_id": "cambridge-samples",
+          "member": "ielts-sample-papers/Academic Reading/115017_Academic_Reading_sample_task_-_Multiple_choice.pdf",
+          "sha256": "11057e7a1cfbf8b38794be0a6b5a88bc3acc780f5daed2aac2e7f26d38ac8473"
+        }
+      },
+      {
+        "id": "matching_features",
+        "response_mode": "feature_ids",
+        "required_per_group": [
+          "features",
+          "allow_option_reuse"
+        ],
+        "source": {
+          "source_id": "cambridge-samples",
+          "member": "ielts-sample-papers/Academic Reading/115015_Academic_Reading_sample_task_-_Matching_features__2_.pdf",
+          "sha256": "a4a4b5eade2c96e34df8c552042bc289385b6f79b6afeec2b74556a140bb0909"
+        }
+      },
+      {
+        "id": "matching_headings",
+        "response_mode": "heading_id_per_paragraph",
+        "required_per_group": [
+          "heading_list",
+          "paragraph_ids",
+          "allow_option_reuse"
+        ],
+        "source": {
+          "source_id": "cambridge-samples",
+          "member": "ielts-sample-papers/Academic Reading/115016_Academic_Reading_sample_task_-_Matching_headings__2_.pdf",
+          "sha256": "6c3607577908b01c7a701be44bb53542bbac3fc3af6132bac2237a8f187e5d42"
+        }
+      },
+      {
+        "id": "diagram_label_completion",
+        "response_mode": "declared_per_group",
+        "allowed_response_modes": [
+          "option_ids",
+          "short_text"
+        ],
+        "required_per_group": [
+          "diagram",
+          "blank_ids",
+          "answer_mode",
+          "word_limit_if_short_text"
+        ],
+        "source": {
+          "source_id": "cambridge-samples",
+          "member": "ielts-sample-papers/Academic Reading/115012_Academic_Reading_sample_task_-_Diagram_label_completion__2_.pdf",
+          "sha256": "6f381ee14d77b4dd888492450187c11a1e50bfbdb73cf5e31eaa6841d5a19742"
+        }
+      },
+      {
+        "id": "table_completion",
+        "response_mode": "short_text",
+        "required_per_group": [
+          "table_cells",
+          "blank_ids",
+          "max_words",
+          "allow_numbers"
+        ],
+        "observed_sample_max_words": 3,
+        "sample_limit_is_not_universal": true,
+        "source": {
+          "source_id": "cambridge-samples",
+          "member": "ielts-sample-papers/Academic Reading/115018_Academic_Reading_sample_task_-_Table_completion__2_.pdf",
+          "sha256": "a2e1e00fed9ba7249f4db1ea0f229993d20878d1b328319d9a22d2910e734b52"
+        }
+      }
+    ],
+    "word_constraints": {
+      "completion_limit": "must_be_explicit_for_each_group",
+      "normalization_rule_version_required": true,
+      "do_not_apply_table_sample_limit_to_all_types": true
+    },
+    "grading": {
+      "kind": "objective_reference_key",
+      "reference_key_and_evidence_required": true,
+      "true_false_distinct_from_yes_no": true,
+      "not_given": {
+        "supporting_quote_required": false,
+        "reviewed_scope_and_justification_required": true,
+        "keyword_absence_is_not_sufficient": true
+      },
+      "ai_answer_key_is_not_official_exam_key": true
+    }
+  },
+  "writing": {
+    "tasks": [
+      {
+        "id": "academic_task_1",
+        "response_mode": "free_text",
+        "minimum_words": 150,
+        "suggested_minutes": 20,
+        "stem_style": "Ask for a clear report of supplied visual information; identify the information to summarize without adding a model answer.",
+        "visuals": {
+          "structured_source_data_required": true,
+          "deterministic_rendering_required": true,
+          "units_and_labels_required": true,
+          "data_and_asset_hashes_required": true
+        },
+        "source": {
+          "source_id": "cambridge-samples",
+          "member": "ielts-sample-papers/Academic Writing/115027_Academic_Writing_sample_task_-_Task_1.pdf",
+          "sha256": "817c88291b893cd6d27d52931ebaa5611ea41f2e902b6fb1afa2519683f51e23"
+        }
+      },
+      {
+        "id": "academic_task_2",
+        "response_mode": "free_text",
+        "minimum_words": 250,
+        "suggested_minutes": 40,
+        "stem_style": "State a clear issue and an explicit response requirement; keep the prompt separate from advice and examples.",
+        "observed_sample_prompt_shapes": [
+          "extent_of_agreement"
+        ],
+        "unverified_additional_prompt_shapes": [
+          "discuss_both_views",
+          "advantages_disadvantages",
+          "problem_solution"
+        ],
+        "source": {
+          "source_id": "cambridge-samples",
+          "member": "ielts-sample-papers/Academic Writing/115028_Academic_Writing_sample_task_-_Task_2.pdf",
+          "sha256": "517ed812097338f32583a3ebe16d447cf9a85ea90409f4469ef2a1dcb1618f18"
+        }
+      }
+    ],
+    "feedback_dimensions": {
+      "task_1": [
+        "task_achievement",
+        "coherence_and_cohesion",
+        "lexical_resource",
+        "grammatical_range_and_accuracy"
+      ],
+      "task_2": [
+        "task_response",
+        "coherence_and_cohesion",
+        "lexical_resource",
+        "grammatical_range_and_accuracy"
+      ],
+      "source": {
+        "source_id": "cambridge-samples",
+        "member": "ielts-sample-papers/Academic Writing/113313_AC_sample_scripts.pdf",
+        "sha256": "4d3b54c16ea4664c1b0189d58d2f361c2eeba87968ab58a03c7e606952c8d9b1"
+      },
+      "scope": "Dimension labels observed in official sample-script commentary; this blueprint is not a complete official band-descriptor corpus."
+    },
+    "grading": {
+      "word_count": "deterministic",
+      "short_response_does_not_automatically_score_zero": true,
+      "comments": "evidence_linked_ai_practice_feedback",
+      "official_band_prediction_validated": false,
+      "answer_revision_and_feedback_binding_required": true
+    }
+  },
+  "proposed_validator_contract": {
+    "status": "requirements_not_executed",
+    "checks": [
+      "request_and_material_hash_match",
+      "unique_question_ids",
+      "declared_type_matches_response_schema",
+      "objective_key_is_present",
+      "no_reference_answer_in_candidate_view",
+      "positive_evidence_ranges_are_within_source",
+      "not_given_does_not_require_fabricated_quote",
+      "completion_word_limit_is_explicit",
+      "task_1_data_matches_rendered_visual",
+      "source_ids_are_in_retrieval_receipt",
+      "submitted_answers_bind_immutable_package_hash"
+    ],
+    "semantic_quality_requires_separate_review": true
+  },
+  "preview_and_attempts": {
+    "record_passage_and_question_exposure": true,
+    "do_not_reveal_unanswered_keys_in_partial_review": true,
+    "submit_persist_then_reveal": true,
+    "history_view_does_not_change_score_or_generate": true
+  },
+  "harness_handoff": {
+    "real_runtime_required": true,
+    "dedicated_profile_session_and_working_directory": true,
+    "reference_tools_read_only": true,
+    "runtime_and_sdk_versions_must_match": true,
+    "model_calls_in_this_research": 0,
+    "not_implemented": true
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "id": "cambridge-academic-faqs",
+  "requested_url": "https://www.cambridgeenglish.org/Images/269898-ielts-academic-faqs.pdf",
+  "retrieved_at_utc": "2026-11-08T06:18:13.115445+00:00",
+  "status": "retrieved",
+  "method": "Unauthenticated HTTPS GET; no browser cookies or credentials",
+  "full_asset_saved": false,
+  "status_code": 200,
+  "final_url": "https://www.cambridgeenglish.org/Images/269898-ielts-academic-faqs.pdf",
+  "content_type": "application/pdf",
+  "http_date": "Sun, 08 Nov 2026 06:18:15 GMT",
+  "last_modified": "Mon, 23 Feb 2026 13:01:35 GMT",
+  "response_bytes": 811609,
+  "response_sha256": "bd8afa979356a34692a112cd8806fe5ce813fb08b00ac97e31941cb621879a67",
+  "pages": 11,
+  "excerpt": "text or question. Remember that you only have 60 minutes to answer the You must write all of your answers on the answer sheet within",
+  "matching_page_numbers": [
+    4,
+    6,
+    8
+  ],
+  "observed_numeric_terms": {
+    "reading_40_questions": true,
+    "reading_60_minutes": true,
+    "reading_three_texts": true,
+    "writing_150_words": true,
+    "writing_250_words": true,
+    "writing_20_minutes": true,
+    "writing_40_minutes": true
+  },
+  "excerpt_words": 25
+}

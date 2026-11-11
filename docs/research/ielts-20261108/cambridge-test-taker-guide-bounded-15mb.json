@@ -1,0 +1,42 @@
+{
+  "id": "cambridge-test-taker-guide-bounded-15mb",
+  "prior_receipts": [
+    "cambridge-test-taker-guide.json",
+    "cambridge-test-taker-guide-retry-01.json"
+  ],
+  "prior_failure_diagnosis": "Initial collectors bounded all PDF reads at 2 MB; this collector permits at most 15 MB for the official illustrated guide. Prior receipts retained.",
+  "requested_url": "https://www.cambridgeenglish.org/Images/23436-ielts-guide-for-test-takers.pdf",
+  "retrieved_at_utc": "2026-11-08T06:38:23.139995+00:00",
+  "full_asset_saved": false,
+  "status": "retrieved",
+  "status_code": 200,
+  "final_url": "https://www.cambridgeenglish.org/Images/23436-ielts-guide-for-test-takers.pdf",
+  "content_type": "application/pdf",
+  "response_sha256": "d8dced401937bc6969617bc8e4afc106077a0e34d8032afe060fa7bfbdcd18d4",
+  "response_bytes": 2294549,
+  "pages": 12,
+  "verified_terms": {
+    "task achievement": [],
+    "task response": [],
+    "coherence and cohesion": [],
+    "lexical resource": [],
+    "grammatical range and accuracy": [],
+    "60 minutes": [
+      5,
+      6,
+      7
+    ],
+    "40 questions": [
+      5,
+      6
+    ],
+    "150 words": [
+      7
+    ],
+    "250 words": [
+      7
+    ]
+  },
+  "excerpt": "Reading 60 minutes* There are 40 questions. A variety of different question types are used. There are 40 questions. A variety of different question types",
+  "excerpt_words": 25
+}

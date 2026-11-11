@@ -1,0 +1,30 @@
+{
+  "id": "cambridge-preparation",
+  "requested_url": "https://www.cambridgeenglish.org/exams-and-tests/ielts/preparation/",
+  "retrieved_at_utc": "2026-11-08T06:18:13.114871+00:00",
+  "status": "retrieved",
+  "method": "Unauthenticated HTTPS GET; no browser cookies or credentials",
+  "full_asset_saved": false,
+  "status_code": 200,
+  "final_url": "https://www.cambridgeenglish.org/exams-and-tests/ielts/preparation/",
+  "content_type": "text/html; charset=utf-8",
+  "http_date": "Sun, 08 Nov 2026 06:18:02 GMT",
+  "last_modified": "Sun, 08 Nov 2026 06:18:03 GMT",
+  "response_bytes": 70209,
+  "response_sha256": "3df64383c05405a4bdf3ba149ca0aa1b51d312b46ef0c4b5af13ae2645dc3a99",
+  "page_title": "IELTS (International English Language Testing System) preparation | Cambridge English",
+  "excerpt": "Our 2026 catalogue IELTS 21 Academic IELTS 21 General Training",
+  "candidate_links": [
+    "https://www.cambridge.org/in/cambridgeenglish/catalog/cambridge-english-exams-ielts/ielts-21-practice-tests/ielts-21-practice-tests-academic-students-book-answers-digital-pack?format=DO&isbn=9781009826723",
+    "https://www.cambridge.org/in/cambridgeenglish/catalog/cambridge-english-exams-ielts/ielts-21-practice-tests/ielts-21-practice-tests-general-training-students-book-answers-digital-pack?format=DO&isbn=9781009826730",
+    "https://www.cambridgeenglish.org/Images/23435-ielts-sample-papers.zip",
+    "https://www.cambridgeenglish.org/Images/23436-ielts-guide-for-test-takers.pdf",
+    "https://www.cambridgeenglish.org/Images/269898-ielts-academic-faqs.pdf"
+  ],
+  "observed_product_link": {
+    "title": "IELTS 21 Academic",
+    "isbn": "9781009826723",
+    "publication_year_verified": false
+  },
+  "excerpt_words": 10
+}

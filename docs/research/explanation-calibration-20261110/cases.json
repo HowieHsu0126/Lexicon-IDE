@@ -1,0 +1,135 @@
+{
+  "schema": "lexicon.ielts.explanation-calibration-cases.v1",
+  "created_date": "2026-11-10",
+  "purpose": "Local development calibration; not official IELTS material or production success-rate evidence.",
+  "authorship": "Cases q01-q08 are new fictional examples written for this calibration. Case q09 derives from the frozen, previously authored fictional Online08 material.",
+  "model_input_fields": [
+    "case_id",
+    "source",
+    "explanation"
+  ],
+  "expected_fields_are_private_to_scoring": true,
+  "relations": [
+    "supported",
+    "contradicted",
+    "unsupported",
+    "ambiguous"
+  ],
+  "scopes": [
+    "article_report",
+    "world_claim",
+    "ambiguous"
+  ],
+  "paired_case_count": 8,
+  "clarity_case_count": 1,
+  "cases": [
+    {
+      "case_id": "q01",
+      "pair_id": "quantifier",
+      "case_kind": "authored_pair",
+      "source": "Researchers did not measure indoor temperatures in every dwelling included in the pilot.",
+      "explanation": "研究人员没有覆盖试点内每一户住宅的室内温度测量。",
+      "expected_relation": "supported",
+      "scope": "world_claim",
+      "label_reason": "保留并非每户均被测量的范围，不断言完全没有测量。"
+    },
+    {
+      "case_id": "q02",
+      "pair_id": "quantifier",
+      "case_kind": "authored_pair",
+      "source": "Researchers did not measure indoor temperatures in every dwelling included in the pilot.",
+      "explanation": "研究人员没有测量试点内任何一户住宅的室内温度。",
+      "expected_relation": "unsupported",
+      "scope": "world_claim",
+      "label_reason": "not every允许部分测量或全未测量；原文没有建立none。"
+    },
+    {
+      "case_id": "q03",
+      "pair_id": "observation_measurement",
+      "case_kind": "authored_pair",
+      "source": "Technicians observed the coating lose reflectivity as dust accumulated. They also weighed the collected dust each morning.",
+      "explanation": "技术人员观察了反射能力下降，也在每天早晨称量了收集到的灰尘。",
+      "expected_relation": "supported",
+      "scope": "world_claim",
+      "label_reason": "原文同时说明观察现象与称量灰尘，两者可以并存。"
+    },
+    {
+      "case_id": "q04",
+      "pair_id": "observation_measurement",
+      "case_kind": "authored_pair",
+      "source": "Technicians observed the coating lose reflectivity as dust accumulated. They also weighed the collected dust each morning.",
+      "explanation": "技术人员只观察了反射能力下降，没有测量灰尘。",
+      "expected_relation": "contradicted",
+      "scope": "world_claim",
+      "label_reason": "原文明说每天称量灰尘，与没有测量灰尘不能同时为真。"
+    },
+    {
+      "case_id": "q05",
+      "pair_id": "report_world",
+      "case_kind": "authored_pair",
+      "source": "The report describes sensors logging roof-surface temperatures. It gives no account of household electricity use or billing.",
+      "explanation": "这份报告没有交代住户用电量或账单情况。",
+      "expected_relation": "supported",
+      "scope": "article_report",
+      "label_reason": "判断仅限报告写了什么，原文明示没有交代这些内容。"
+    },
+    {
+      "case_id": "q06",
+      "pair_id": "report_world",
+      "case_kind": "authored_pair",
+      "source": "The report describes sensors logging roof-surface temperatures. It gives no account of household electricity use or billing.",
+      "explanation": "研究人员没有测量住户用电量，也没有查看账单。",
+      "expected_relation": "unsupported",
+      "scope": "world_claim",
+      "label_reason": "报告未交代不等于研究行为未发生，原文不能确认这些否定断言。"
+    },
+    {
+      "case_id": "q07",
+      "pair_id": "comparison_time",
+      "case_kind": "authored_pair",
+      "source": "During the eight-week trial, coated roofs were cooler than untreated roofs on clear afternoons. Night temperatures were not compared.",
+      "explanation": "八周试验期间，在晴朗下午，涂层屋顶比未处理屋顶更凉。",
+      "expected_relation": "supported",
+      "scope": "world_claim",
+      "label_reason": "保留试验时段、晴朗下午和相同对照对象。"
+    },
+    {
+      "case_id": "q08",
+      "pair_id": "comparison_time",
+      "case_kind": "authored_pair",
+      "source": "During the eight-week trial, coated roofs were cooler than untreated roofs on clear afternoons. Night temperatures were not compared.",
+      "explanation": "整个夏季，无论白天还是夜间，涂层屋顶都比未处理屋顶更凉。",
+      "expected_relation": "unsupported",
+      "scope": "world_claim",
+      "label_reason": "八周晴朗下午的结果不能建立整个夏季昼夜的比较；未比较夜间也不证明夜间相反。"
+    },
+    {
+      "case_id": "q09",
+      "pair_id": null,
+      "case_kind": "legacy_clarity",
+      "source": "Cities are searching for affordable ways to protect residents during hotter summers. In a fictional pilot study, researchers compared thirty-six roofs across six neighbourhoods. Twelve roofs received a reflective coating, twelve supported shallow gardens, and twelve remained unchanged. Sensors recorded surface temperatures at the same times each day for eight weeks. On clear afternoons, both modified surfaces were cooler than the untreated roofs, although the gardens required regular watering.\n\nThe reflective coating cost less to install than the gardens. Its performance nevertheless depended on maintenance: dust gradually reduced its ability to reflect sunlight. The gardens retained some rainwater, but their weight made them unsuitable for several older buildings. The researchers stressed that the results described roof surfaces. They did not measure temperatures inside every dwelling, hospital admissions, or changes in residents’ energy bills.\n\nThe pilot also exposed a problem in how adaptation projects are chosen. Building owners who volunteered already had the resources to prepare their roofs. Renters in poorly maintained housing were therefore underrepresented. A programme that simply reimbursed willing owners could expand the technology while failing to reach people most exposed to heat. Local tenant groups asked the council to publish its selection criteria before funding a larger scheme.\n\nThe writer argues that urban adaptation should combine practical experiments with attention to access. A cheap intervention is not automatically a fair one, and a visible installation is not proof of improved health. Councils should examine who benefits, maintain equipment after installation, and compare the results with alternatives such as shade trees and public cooling spaces. The pilot offers reasons for further investigation, rather than a single solution for every neighbourhood.",
+      "explanation": "灰尘降低反光能力是观察到的现象，而非“测量灰尘”。",
+      "expected_relation": "ambiguous",
+      "scope": "ambiguous",
+      "label_reason": "可以指文章没有报告测尘，也可指研究行为没有测尘；前者有文本依据，后者未被建立。保留历史未达预期结果，不作为确定事实错误负例。",
+      "interpretations": [
+        {
+          "scope": "article_report",
+          "claim": "文章报告灰尘降低反射能力，没有描述测尘。",
+          "relation": "supported"
+        },
+        {
+          "scope": "world_claim",
+          "claim": "研究人员只观察了影响，没有测量灰尘。",
+          "relation": "unsupported"
+        }
+      ],
+      "derived_material": true,
+      "source_job_id": "job-4e7478e52565434d8c7cfe85febcb748",
+      "source_package_sha256": "19cb44581f067f2cac2b741fb5a1e90a188938281e0375de7bb77fc0bfff7a8f",
+      "historical_results_unchanged": true,
+      "original_explanation_span": "D项错误：灰尘降低反光能力是观察到的现象，而非“测量灰尘”。",
+      "derivation": "Remove only the option-label prefix D项错误： so the standalone wording check does not require a missing question or option. Preserve the remaining sentence exactly."
+    }
+  ]
+}

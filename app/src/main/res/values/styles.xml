@@ -1,0 +1,16 @@
+<resources>
+    <style name="Theme.Lexicon" parent="android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:windowBackground">#F6F3EA</item>
+        <item name="android:colorAccent">#315C85</item>
+    </style>
+    <style name="Theme.Lexicon.Capture" parent="Theme.Lexicon">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowIsFloating">false</item>
+    </style>
+</resources>

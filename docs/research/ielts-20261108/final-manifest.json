@@ -1,0 +1,142 @@
+{
+  "schema": "lexicon.ielts.research.manifest.v1",
+  "status": "source_and_draft_checks_passed",
+  "created_at_utc": "2026-11-08T07:09:19.520666+00:00",
+  "implementation_status": "not_implemented",
+  "real_model_requests": 0,
+  "services_started": 0,
+  "source_receipts_and_documents": [
+    {
+      "path": "docs/research/ielts-20261108/cambridge-19-unconfirmed-route.json",
+      "sha256": "9af3fc9ef6cfbd5cd96eae6b8433ac46c1712e03b3eca2e7e6eff06715dad913",
+      "bytes": 448
+    },
+    {
+      "path": "docs/research/ielts-20261108/cambridge-20-unconfirmed-route.json",
+      "sha256": "b0914d9b68cc39d821364c9043d659626f0327333a7e8a1b4fd294f5174fe444",
+      "bytes": 448
+    },
+    {
+      "path": "docs/research/ielts-20261108/cambridge-21-linked-product.json",
+      "sha256": "8251216371666ec557356bb0e6b99070d65b0dbfc7ad4c01462d5288a9d5ddfc",
+      "bytes": 557
+    },
+    {
+      "path": "docs/research/ielts-20261108/cambridge-academic-faqs.json",
+      "sha256": "6c4db588aa3043b9c9284533e020a63e2860376e4139e4cdbcc5d7fecec3b452",
+      "bytes": 1183
+    },
+    {
+      "path": "docs/research/ielts-20261108/cambridge-preparation.json",
+      "sha256": "72a81026b5e16ea9212de0eeff33532d9b40d286b6e3ff130d8a830e04962b86",
+      "bytes": 1725
+    },
+    {
+      "path": "docs/research/ielts-20261108/cambridge-samples.json",
+      "sha256": "33b371e203a0c39ed8b45814362eecf35bffa322a208bc6b46e38733ffc81cad",
+      "bytes": 11459
+    },
+    {
+      "path": "docs/research/ielts-20261108/cambridge-test-taker-guide-bounded-15mb.json",
+      "sha256": "6fa51a276bb6b69fa2a0e7b07d04f8721da8ca03661f16b2d2f07ec42143945c",
+      "bytes": 1389
+    },
+    {
+      "path": "docs/research/ielts-20261108/cambridge-test-taker-guide-retry-01.json",
+      "sha256": "d761c8c9cc267c3b18203e9ac7e435f18e68b38b9fff1eb46041e098192be8ca",
+      "bytes": 391
+    },
+    {
+      "path": "docs/research/ielts-20261108/cambridge-test-taker-guide.json",
+      "sha256": "0d408380a3a6d8a397c1b5920ce50f1e4bdbd467f13e2457361bbf8527b7a176",
+      "bytes": 387
+    },
+    {
+      "path": "docs/research/ielts-20261108/coverage.json",
+      "sha256": "16991f2372b364fd555db00c82f79c33a564fe179faa8f63f7cb74ba3d762668",
+      "bytes": 626
+    },
+    {
+      "path": "docs/research/ielts-20261108/harness-cli-profile-composition.json",
+      "sha256": "3839b0216578315d078fabc5242dd94dddffe8a1f7f65b0b8737e487d6c1d832",
+      "bytes": 992
+    },
+    {
+      "path": "docs/research/ielts-20261108/harness-sdk-client.json",
+      "sha256": "d5ae418844f8e1c88d6bc61348aed61fab35ffb07bd2522ca9f01adfe706aac5",
+      "bytes": 1251
+    },
+    {
+      "path": "docs/research/ielts-20261108/harness-sdk-default-tools.json",
+      "sha256": "d03f1c9fc5d17e0a3f070d47f2808e4887b433009b09dc5e77ed042f1356a67b",
+      "bytes": 1004
+    },
+    {
+      "path": "docs/research/ielts-20261108/harness-sdk-minimal-tools.json",
+      "sha256": "18e86b17eb0b59f045e716b3a536e21b7b0e2f4ebee3eda677ada0ac4cea8abc",
+      "bytes": 970
+    },
+    {
+      "path": "docs/research/ielts-20261108/harness-sdk-protocol.json",
+      "sha256": "d95105c454645cbd15d7e934e1f9251df2839fecd267b55c023f88a8d92c12d2",
+      "bytes": 1185
+    },
+    {
+      "path": "docs/research/ielts-20261108/harness-tools-policy.json",
+      "sha256": "afe9e6575b5b60f06f527914fa559e22dfe254b05f373a62ed5b84f1e3cfefa2",
+      "bytes": 1152
+    },
+    {
+      "path": "docs/research/ielts-20261108/harness-upstream-revision.json",
+      "sha256": "12794817e92467aab589e68c0f985ef05d29038b44e275ebe83a5115a0150b48",
+      "bytes": 688
+    },
+    {
+      "path": "docs/research/ielts-20261108/ielts-reading-format.json",
+      "sha256": "cb213bc81c58fd5fff974fe910127d3e4c016e8999434e680622c5f789df4a78",
+      "bytes": 436
+    },
+    {
+      "path": "docs/research/ielts-20261108/ielts-writing-format.json",
+      "sha256": "98bd96d859d3b09d70422be5bdf9c8096809b6bebe566a2d17b7a2e42c2e63bc",
+      "bytes": 436
+    },
+    {
+      "path": "docs/research/ielts-20261108/installed-harness-identity.json",
+      "sha256": "7a9426308cecc6d0a2d4e27ea34300cea4547f4ab5c5e4a2f4ba29c379233b35",
+      "bytes": 1179
+    },
+    {
+      "path": "docs/research/ielts-20261108/installed-harness-tools-policy.json",
+      "sha256": "490bb8ade40221b665ac748b262deec4c684e9056211140f45f1fccd0b5cef93",
+      "bytes": 556
+    },
+    {
+      "path": "docs/research/ielts-20261108/manifest.json",
+      "sha256": "458ff2540aef9272c486585014a25dc73347701d8950f28b368c80e5f4ce82f3",
+      "bytes": 2199
+    },
+    {
+      "path": "docs/research/ielts-20261108/sample-style-features.json",
+      "sha256": "0e237a057a0613863569e6264694529860943eaa230a30ae61ed1a21899bd43c",
+      "bytes": 5319
+    },
+    {
+      "path": "docs/research/ielts-20261108/style-blueprint.json",
+      "sha256": "c16d8e852081c5c5c4267af20cdac001f8ff2c606bede986772f1296f5babdd1",
+      "bytes": 10735
+    },
+    {
+      "path": "docs/IELTS-EXERCISES.md",
+      "sha256": "b8ff7178f39420d5f2739fbea6d2f9f78836eac11f0caf5b079c373cb208dbd3",
+      "bytes": 18365
+    },
+    {
+      "path": "docs/research/ielts-20261108/README.md",
+      "sha256": "41d2485d058aca3f9caa33f6b5927f8f7a2e723e939a71a2e9406396135bdb0c",
+      "bytes": 3947
+    }
+  ],
+  "full_books_or_sample_assets_saved": false,
+  "claims_scope": "Source discovery, bounded public-sample style extraction and draft design only; not recent-three-year Cambridge corpus coverage or runtime integration validation"
+}
