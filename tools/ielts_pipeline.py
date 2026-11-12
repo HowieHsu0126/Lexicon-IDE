@@ -173,6 +173,9 @@ def stage_prompt(request, *, package=None, review_id=None, blind_review=None, de
     # generation/review protocols explicitly terminate through the final tool.
     prompt = prompt[:prompt.rindex('\n\nFINAL DELIVERY:')]
     if package is None:
+        from ielts_candidate import focused_information_practice, FOCUSED_INFORMATION_GUIDANCE
+        if focused_information_practice(request):
+            prompt = FOCUSED_INFORMATION_GUIDANCE + "\n\n" + prompt
         prompt = prompt.replace(
             'Write each learner-facing explanation in one or two source-grounded sentences about the correct answer, ',
             'Write a concise source-grounded explanation directly connecting the evidence to the correct answer, '

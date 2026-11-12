@@ -211,6 +211,11 @@ def generation_schema(request: Any) -> Dict[str, Any]:
     receipt = contract.validate_request(request)
     wanted = request["reading_requests"]
     writing = request["writing_task2_request"]
+    try:
+        from .ielts_candidate import focused_information_practice, FOCUSED_INFORMATION_GUIDANCE
+    except ImportError:
+        from ielts_candidate import focused_information_practice, FOCUSED_INFORMATION_GUIDANCE
+    practice_guidance = FOCUSED_INFORMATION_GUIDANCE if focused_information_practice(request) else ""
     return _object({
         "schema": _constant(contract.PACKAGE_SCHEMA),
         "request_id": _constant(request["request_id"]),
@@ -232,7 +237,7 @@ def generation_schema(request: Any) -> Dict[str, Any]:
             "source_refs": _references(request, 1),
         }),
         "writing_task1": _visual_generation(request),
-    }, "Original single-passage AI practice input; at most 1,000,000 serialized UTF-8 bytes. " + _INPUT_RULES + _bounds(request))
+    }, "Original single-passage AI practice input; at most 1,000,000 serialized UTF-8 bytes. " + practice_guidance + _INPUT_RULES + _bounds(request))
 
 
 def _checks(names: tuple, states: tuple) -> dict:

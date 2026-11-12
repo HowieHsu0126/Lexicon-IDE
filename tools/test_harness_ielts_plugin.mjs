@@ -47,7 +47,7 @@ print(json.dumps(explanation_fixture(),ensure_ascii=False))
 assert.equal(fixtureProcess.status, 0, 'offline fixtures must load');
 const [request, candidate, review, explanationReview] = JSON.parse(fixtureProcess.stdout);
 const WRITING_INSTRUCTION = 'To what extent do you agree or disagree with this statement?';
-const SYNTHETIC_WRITING_DRAFT = Object.freeze({background: 'Public budgets support several competing priorities.',
+const SYNTHETIC_WRITING_DRAFT = Object.freeze({background: 'The writer argues that public investment should support clean energy.',
   target_statement: 'Public funds should prioritise clean energy.'});
 const corpusPath = join(ROOT, 'dist/validation-ielts-corpus-2026-11-08/corpus-01/reference.json');
 assert(existsSync(corpusPath), 'build the frozen corpus before the plugin selftest');
@@ -742,7 +742,7 @@ try {
   await test('native writing draft compiles exact text into a prompt-only canonical artifact', async () => {
     for (const draft of [SYNTHETIC_WRITING_DRAFT,
       {background: '', target_statement: 'Public investment should balance affordability and access'},
-      {background: '  Context stays EXACTLY as authored  ', target_statement: '  Public investment should prioritise access  '},
+      {background: '', target_statement: '  Public investment should prioritise access  '},
     ]) {
       const f = fixture('generation', {strictSchema: true, candidateArtifact: true}); const rt = await mount(f);
       try {
@@ -756,6 +756,16 @@ try {
         assert.equal(rt.receipt().completedPerTool.lexicon_ielts_validate, 1);
       } finally { await rt.cleanup(); }
     }
+  });
+  await test('unquoted writing background is rejected without saving a candidate', async () => {
+    const f = fixture('generation', {strictSchema: true, candidateArtifact: true}); const rt = await mount(f);
+    try {
+      const raw = generationInput(candidate, {background: 'Public budgets support several competing priorities.',
+        target_statement: SYNTHETIC_WRITING_DRAFT.target_statement});
+      const result = rt.value(await rt.call('lexicon_ielts_validate', {candidate: raw}));
+      assert.equal(result.ok, false); assert.equal(result.error.code, 'candidate_writing_background_not_extractive');
+      assert(!existsSync(f.manifest.candidatePath)); assert.equal(rt.receipt().candidateSha256, null);
+    } finally { await rt.cleanup(); }
   });
   await test('native schema rejects legacy prompts mixed prompt fields and open-ended draft keys without an artifact', async () => {
     const both = generationInput(); both.writing_task2.prompt = candidate.writing_task2.prompt;
@@ -816,7 +826,8 @@ print(json.dumps(fixtures,ensure_ascii=False))
           assert.equal(rt.receipt().startupMetadataLimit, 262144);
           assert.equal(rt.ctx.get(plugin.READY_SERVICE).compilerReady, true);
           if (mode === 'generation') {
-            assert.equal(rt.value(await rt.call('lexicon_ielts_validate', {candidate: generationInput(candidate)})).status, 'structurally_valid');
+            const input = generationInput(candidate, {background: '', target_statement: SYNTHETIC_WRITING_DRAFT.target_statement});
+            assert.equal(rt.value(await rt.call('lexicon_ielts_validate', {candidate: input})).status, 'structurally_valid');
           }
         } finally { await rt.cleanup(); }
       }

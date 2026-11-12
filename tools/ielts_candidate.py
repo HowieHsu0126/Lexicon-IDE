@@ -22,6 +22,41 @@ WRITING_DRAFT_CONFLICT = "candidate_writing_prompt_conflict"
 WRITING_DRAFT_TASK_TYPE = "candidate_writing_draft_type"
 WRITING_DRAFT_TARGET_PARAGRAPH = "candidate_writing_target_paragraph"
 
+# A product practice recipe, not an official IELTS answer-frequency claim.
+# Keep it out of answer-blind review prompts/schemas and saved package contracts.
+FOCUSED_INFORMATION_GUIDANCE = (
+    "FOCUSED CONTRAST PRACTICE: This product's information-judgement set must exercise supported, "
+    "contradicted and unreported information: include at least one true, one false and one not_given. "
+    "There is no fixed order or equal ratio. Choose the remaining answers from evidence, never by quota. "
+    "Build distinct, plausible statements about the passage topic; use meaningful paraphrases or precise "
+    "scope distinctions rather than merely copying sentences or negating the same claim. "
+    "For NOT GIVEN choose a concrete relevant detail that the complete passage neither confirms nor "
+    "contradicts. An explicit statement that an outcome was not measured contradicts a claim that it was "
+    "measured; it is not evidence for NOT GIVEN. Do not invent source facts, change existing answer labels "
+    "to fill coverage, use outside knowledge, or make unrelated trivia. Replace a deficient question with "
+    "a genuinely different statement and recheck the whole set in passage order. If the supplied scope "
+    "cannot support defensible questions, report the limitation; do not fabricate a compliant package. "
+)
+
+
+def focused_information_practice(request):
+    wanted = request["reading_requests"]
+    return len(wanted) >= 4 and all(q["type"] == "identifying_information" for q in wanted)
+
+
+def validate_focused_coverage(request, candidate):
+    """New generation only; response diversity never establishes answer correctness."""
+    if not focused_information_practice(request):
+        return
+    answers = [item.get("answer") for item in candidate["reading_questions"]]
+    if any(not isinstance(answer, str) or answer not in ("true", "false", "not_given") for answer in answers):
+        _fail("candidate_information_answer", "candidate.reading_questions", "Use true, false or not_given")
+    if set(answers) != {"true", "false", "not_given"}:
+        _fail("candidate_focused_response_coverage", "candidate.reading_questions",
+              "This contrast practice needs supported, contradicted and unreported claims. Rebuild distinct "
+              "questions from the full passage to include true, false and not_given; never relabel a question "
+              "just to satisfy coverage. Preserve passage order, empty NOT GIVEN source_refs and its full absence audit.")
+
 
 def _fail(code, path, message):
     raise contract.ContractError(code, path, message)
@@ -310,4 +345,5 @@ def compile_candidate(request, candidate, mode):
                     alternative["source_ref"] = copy.deepcopy(ref)
     if mode == "generation":
         validate_focused_sequence(request, result)
+        validate_focused_coverage(request, result)
     return result

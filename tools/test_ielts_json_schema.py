@@ -155,6 +155,12 @@ def capacity_fixture(*, mixed_rules: bool, long_ids: bool):
             question["reviewed_paragraph_ids"] = [p["paragraph_id"] for p in request["paragraphs"]]
         else:
             question["source_refs"] = [reference(first, text)]
+        if not mixed_rules and index == 1:
+            question.update(prompt="The council rejected solar panels.", answer="false")
+        elif not mixed_rules and index == 2:
+            question.update(prompt="The approved solar panels cost five thousand pounds.", answer="not_given",
+                            source_refs=[], reviewed_paragraph_ids=[p["paragraph_id"] for p in request["paragraphs"]],
+                            absence_justification="Every fixture paragraph states approval only, without any price.")
         request["reading_requests"].append(wanted)
         package["reading_questions"].append(question)
     package.update(request_id=request["request_id"], article_id=request["article_id"],

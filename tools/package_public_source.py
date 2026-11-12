@@ -21,7 +21,7 @@ def sha(path):
 
 
 def source_files():
-    names={'LICENSE','.gitignore','gradlew','gradlew.bat','gradle.properties','settings.gradle.kts','build.gradle.kts','app/proguard-rules.pro'}
+    names={'LICENSE','AGENTS.md','FREEZE.md','RELEASE_NOTES.md','.gitignore','gradlew','gradlew.bat','gradle.properties','settings.gradle.kts','build.gradle.kts','app/proguard-rules.pro'}
     for name in ['gradle','app/src','data/src','domain/src','data/schemas','domain/reference','licenses']:
         for path in (ROOT/name).rglob('*'):
             if path.is_file() and path.suffix in SOURCE_SUFFIXES and not BANNED.intersection(path.relative_to(ROOT).parts):
