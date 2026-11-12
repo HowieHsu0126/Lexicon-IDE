@@ -9,6 +9,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import dev.lexicon.domain.*
@@ -21,8 +22,14 @@ internal fun IeltsVisualChart(visual: IeltsVisual, modifier: Modifier = Modifier
     val primary = MaterialTheme.colorScheme.primary
     val colors = listOf(primary, MaterialTheme.colorScheme.secondary, MaterialTheme.colorScheme.tertiary)
     Column(modifier.fillMaxWidth().testTag("ielts_task1_visual"), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        Text(visual.title, style = MaterialTheme.typography.titleMedium)
-        Text(visual.unit, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            // A source description is reading text. Keep every word and system font scaling;
+            // proportional type avoids the oversized block produced by a long IDE heading.
+            Text(visual.title, Modifier.fillMaxWidth().testTag("ielts_visual_title"),
+                style = MaterialTheme.typography.bodyLarge.copy(fontFamily = ReadingSerif))
+            Text(visual.unit, Modifier.fillMaxWidth().testTag("ielts_visual_unit"), style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
         if (visual.kind == "grouped_bar") {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text("0", style = MaterialTheme.typography.labelSmall)
@@ -62,11 +69,15 @@ internal fun IeltsVisualWritingCard(task: IeltsVisualTask, paragraphs: List<Ielt
     val editorGesture = inputGesture?.let { Modifier.observeIeltsInputStart(it, true) } ?: Modifier
     Surface(Modifier.fillMaxWidth().testTag("ielts_writing_task1"), color = MaterialTheme.colorScheme.surfaceContainerLow,
         shape = RoundedCornerShape(12.dp)) {
-        Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            Text("Writing Task 1", style = MaterialTheme.typography.titleMedium)
-            Text("20 分钟 · 至少 150 词", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text("写作 · Task 1", Modifier.semantics { heading() }, style = MaterialTheme.typography.titleMedium)
+                Text("${task.suggestedMinutes} 分钟 · 至少 ${task.minimumWords} 词", style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
             IeltsVisualChart(task.visual)
-            Text(IeltsVisualContract.INSTRUCTION, style = MaterialTheme.typography.bodyLarge.copy(fontFamily = ReadingSerif))
+            Text(IeltsVisualContract.INSTRUCTION, Modifier.fillMaxWidth().testTag("ielts_visual_instruction"),
+                style = MaterialTheme.typography.bodyLarge.copy(fontFamily = ReadingSerif))
             if (editable) OutlinedTextField(value = writing, onValueChange = onWriting,
                 modifier = Modifier.fillMaxWidth().then(editorGesture).testTag("ielts_writing1_input"), minLines = 7,
                 label = { Text("写作") }, textStyle = MaterialTheme.typography.bodyLarge.copy(fontFamily = ReadingSerif))

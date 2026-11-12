@@ -158,12 +158,18 @@ class IeltsGeneratedMaterialTrialTest {
                 screenshot("03-answer-${index + 1}")
             }
             val task1Writing = verified.exercisePackage.writingTask1.task?.let { task ->
+                practiceNode("ielts_visual_title").assertTextEquals(task.visual.title)
+                textFits("ielts_visual_title")
+                textFits("ielts_visual_unit")
+                screenshot("03-task1-title")
                 task.visual.categories.forEachIndexed { ci, _ ->
                     task.visual.series.forEachIndexed { si, _ ->
                         practiceNode("ielts_visual_cell_${si}_$ci").assertIsDisplayed()
                     }
                     screenshot("03-task1-category-${ci + 1}")
                 }
+                practiceNode("ielts_visual_instruction").assertTextEquals(IeltsVisualContract.INSTRUCTION)
+                textFits("ielts_visual_instruction")
                 val text = "Visits increased across the reported groups, with a larger increase at the first branch."
                 practiceNode("ielts_writing1_input").performTextInput(text)
                 compose.waitUntil(10_000) { host.model.state.value.writingTask1Text == text }
