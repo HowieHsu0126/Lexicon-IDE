@@ -174,7 +174,7 @@ class IeltsExerciseViewModelTest {
         }
         override suspend fun cancel(requestId: String) = values.getValue(requestId)
     }
-    private inner class Fixture(scope: TestScope, val handle: SavedStateHandle = SavedStateHandle()) {
+    private inner class Fixture(scope: TestScope, val handle: SavedStateHandle = SavedStateHandle(), study: IeltsStudyRepository? = null) {
         val dispatcher = StandardTestDispatcher(scope.testScheduler)
         val practices = Practices()
         val generations = Generations()
@@ -184,10 +184,71 @@ class IeltsExerciseViewModelTest {
         init {
             Dispatchers.setMain(dispatcher)
             vm = IeltsExerciseViewModel(generations, practices, handle, clock = { 500 }, idFactory = { "request-ui-${++ids}" },
-                validationDispatcher = dispatcher)
+                validationDispatcher = dispatcher, studyRepository = study)
             store.put("ielts-test", vm)
         }
         fun close() { store.clear(); Dispatchers.resetMain() }
+    }
+
+    private inner class Studies : IeltsStudyRepository {
+        var current = IeltsStudyProfile(1, 100, IeltsStudyFeedback("prior-attempt", "q1", IeltsExerciseJson.packageHash(exercise),
+            "d".repeat(64), IeltsReadingType.MULTIPLE_CHOICE, IeltsStudyIntent.PRACTICE_AGAIN, 1, 100))
+        val bindings = mutableMapOf<String, IeltsStudyRequest>()
+        var gate: CompletableDeferred<Unit>? = null
+        var failFreeze = false
+        var freezes = 0
+        override suspend fun load(attemptId: String?) = IeltsStudySnapshot(current)
+        override suspend fun reflect(attemptId: String, questionId: String, intent: IeltsStudyIntent?, expectedFeedbackRevision: Long, expectedProfileRevision: Long, now: Long): IeltsStudySnapshot = error("unused")
+        override suspend fun useBalanced(expectedProfileRevision: Long, now: Long) = IeltsStudySnapshot(current.copy(focus = null))
+        override suspend fun requestBinding(requestId: String) = bindings[requestId]
+        override suspend fun inherit(original: IeltsGatewaySubmit, replacement: IeltsGatewaySubmit, now: Long): IeltsStudyRequest? = error("unused")
+        override suspend fun freeze(submit: IeltsGatewaySubmit, expectedProfileRevision: Long, now: Long): IeltsStudyRequest {
+            freezes++; gate?.await()
+            if (failFreeze) throw IeltsStudyFailure(IeltsStudyFailureCode.UNAVAILABLE)
+            if (expectedProfileRevision != current.revision) throw IeltsStudyFailure(IeltsStudyFailureCode.CONFLICT)
+            assertEquals(IeltsStudyPolicy.requests(current.focus?.kind), submit.readingRequests)
+            return IeltsStudyRequest(submit.requestId, IeltsExerciseJson.canonicalSha256(IeltsGatewayProtocol.encodeSubmit(submit)), current, now)
+                .also { bindings[submit.requestId] = it }
+        }
+    }
+
+    @Test fun selectedFocusIsFrozenBeforeNetworkAndDoubleTapCannotCreateTwoRequests() = runTest {
+        val studies = Studies(); val f = Fixture(this, study = studies)
+        try {
+            runCurrent(); f.vm.prepare(article, body, true); advanceUntilIdle()
+            studies.gate = CompletableDeferred()
+            f.vm.generate(); runCurrent(); f.vm.generate(); runCurrent()
+            assertEquals(0, f.generations.generated); assertEquals(1, studies.freezes)
+            studies.gate!!.complete(Unit); advanceUntilIdle()
+            assertEquals(1, f.generations.generated)
+            assertEquals(IeltsStudyPolicy.requests(IeltsReadingType.MULTIPLE_CHOICE), f.generations.lastSubmit!!.readingRequests)
+            assertNotNull(studies.bindings[f.generations.lastSubmit!!.requestId])
+        } finally { f.close() }
+    }
+
+    @Test fun staleFocusDoesNotDispatchAndExplicitReloadUsesTheNewChoice() = runTest {
+        val studies = Studies(); val f = Fixture(this, study = studies)
+        try {
+            runCurrent(); f.vm.prepare(article, body, true); advanceUntilIdle()
+            studies.current = studies.current.copy(revision = 2, focus = null)
+            f.vm.generate(); advanceUntilIdle()
+            assertEquals(0, f.generations.generated); assertNotNull(f.vm.state.value.studyError); assertFalse(f.vm.state.value.canGenerate)
+            f.vm.reloadStudy(); advanceUntilIdle(); assertNull(f.vm.state.value.studyError)
+            f.vm.generate(); advanceUntilIdle()
+            assertEquals(1, f.generations.generated); assertEquals(IeltsStudyPolicy.requests(null), f.generations.lastSubmit!!.readingRequests)
+        } finally { f.close() }
+    }
+
+    @Test fun failedChoicePersistenceCannotSendARequestOrDiscardItsPreparedArticle() = runTest {
+        val studies = Studies(); val f = Fixture(this, study = studies)
+        try {
+            runCurrent(); f.vm.prepare(article, body, true); advanceUntilIdle()
+            studies.failFreeze = true
+            f.vm.generate(); advanceUntilIdle()
+            assertEquals(0, f.generations.generated); assertTrue(studies.bindings.isEmpty())
+            assertEquals(article.id, f.vm.state.value.preparedArticleId)
+            assertEquals(IeltsReadingType.MULTIPLE_CHOICE, f.vm.state.value.study!!.profile.focus!!.kind)
+        } finally { f.close() }
     }
 
     @Test fun preparingBeforePairingStillOptsIntoDeclaredTask1AtGenerate() = runTest {

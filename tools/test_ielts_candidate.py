@@ -38,7 +38,7 @@ def writing_draft_fixture():
     request, package, _ = fixture()
     del package["writing_task2"]["prompt"]
     package["writing_task2"]["prompt_draft"] = {
-        "background": "Cities can fund different kinds of energy projects. Residents face different costs.",
+        "background": package["writing_task2"]["source_refs"][0]["quote"],
         "target_statement": "Cities should prioritise equal access to clean energy while keeping projects affordable.",
     }
     return request, package
@@ -116,7 +116,9 @@ class CandidateCompilerTest(unittest.TestCase):
     def test_multisentence_background_and_compound_target_are_preserved(self):
         request, package = writing_draft_fixture()
         draft = package["writing_task2"]["prompt_draft"]
-        draft["background"] = "Cities have different resources. Costs vary.\n\nAccess also differs between districts."
+        paragraph = request["paragraphs"][0]
+        draft["background"] = paragraph["text"]
+        package["writing_task2"]["source_refs"] = [dict(paragraph_id=paragraph["paragraph_id"], start=paragraph["start"], end=paragraph["end"], quote=paragraph["text"])]
         draft["target_statement"] = "Cities should give fairness and access greater weight than cost, while keeping projects affordable."
         compiled = compile_candidate(request, package, "generation")
         self.assertEqual("\n\n".join([draft["background"], draft["target_statement"], WRITING_AGREEMENT_INSTRUCTION]),
@@ -129,6 +131,21 @@ class CandidateCompilerTest(unittest.TestCase):
         package["writing_task2"]["prompt"] = legacy
         self.assertEqual(package, compile_candidate(request, package, "generation"))
         self.assertNotIn("with this statement", compile_candidate(request, package, "generation")["writing_task2"]["prompt"])
+
+    def test_new_background_must_be_empty_or_exact_source_without_factual_rewriting(self):
+        request, package = writing_draft_fixture()
+        package["writing_task2"]["prompt_draft"]["background"] = "The council opened two public libraries."
+        self.rejects(request, package, "candidate_writing_background_not_extractive")
+        package["writing_task2"]["prompt_draft"]["background"] = ""
+        compile_candidate(request, package, "generation")
+
+    def test_compiled_background_cannot_bypass_the_same_guard(self):
+        request, package = writing_draft_fixture()
+        compiled = compile_candidate(request, package, "generation")
+        prompt = compiled["writing_task2"]["prompt"].split("\n\n")
+        prompt[0] = "The council opened two public libraries."
+        compiled["writing_task2"]["prompt"] = "\n\n".join(prompt)
+        self.rejects(request, compiled, "candidate_writing_background_not_extractive")
 
     def test_writing_prompt_and_draft_are_mutually_exclusive(self):
         request, package = writing_draft_fixture()

@@ -16,7 +16,7 @@ from ielts_corpus import load, style_source_bundle
 from test_ielts_contract import fixture
 
 
-SYNTHETIC_WRITING_BACKGROUND = 'Public budgets support several competing priorities.'
+SYNTHETIC_WRITING_BACKGROUND = 'The writer argues that public investment should support clean energy.'
 SYNTHETIC_WRITING_TARGET = 'Public funds should prioritise clean energy.'
 SYNTHETIC_WRITING_INSTRUCTION = 'To what extent do you agree or disagree with this statement?'
 

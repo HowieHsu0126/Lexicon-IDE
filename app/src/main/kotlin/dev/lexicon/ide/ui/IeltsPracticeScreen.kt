@@ -52,6 +52,11 @@ internal fun IeltsPracticeScreen(
     modifier: Modifier = Modifier,
     writingTask1Text: String? = null,
     onWritingTask1: (String) -> Unit = {},
+    study: IeltsStudySnapshot? = null,
+    studyBusy: Boolean = false,
+    studyError: String? = null,
+    onReflect: (String, IeltsStudyIntent?) -> Unit = { _, _ -> },
+    onReloadStudy: () -> Unit = {},
 ) {
     key(candidate.packageSha256) {
         val matches = answerView == null || (
@@ -127,6 +132,11 @@ internal fun IeltsPracticeScreen(
                         IeltsQuestionCard(index + 1, question, reviewItem?.submittedAnswer ?: responseMap[question.questionId].orEmpty(),
                             editable = !locked, review = reviewItem, submissionIdentity = review?.submissionSha256,
                             paragraphs = candidate.paragraphs, finishInput = finishInput, inputGesture = inputGesture,
+                            studyEnabled = study != null, feedback = study?.feedback?.singleOrNull {
+                                it.questionId == question.questionId && it.packageHash == candidate.packageSha256 &&
+                                    it.submissionHash == review?.submissionSha256
+                            },
+                            studyBusy = studyBusy, onReflect = { onReflect(question.questionId, it) },
                             onAnswer = { value -> if (!locked) onAnswer(question.questionId, value) })
                     }
                     if (task1 != null) item(key = "writing1") {
@@ -145,7 +155,7 @@ internal fun IeltsPracticeScreen(
                     }
                     item(key = "end") { Spacer(Modifier.height(8.dp)) }
                 }
-                if (review == null || actualError != null) {
+                if (review == null || actualError != null || studyError != null) {
                   HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                   Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     actualError?.let { message ->
@@ -153,6 +163,12 @@ internal fun IeltsPracticeScreen(
                             style = MaterialTheme.typography.bodySmall)
                         TextButton(onClick = onRetry, enabled = !isSaving,
                             modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("ielts_retry")) { Text("重试") }
+                    }
+                    studyError?.let {
+                        Text(it, Modifier.testTag("ielts_study_error"), style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.error)
+                        TextButton(onClick = onReloadStudy, enabled = !studyBusy,
+                            modifier = Modifier.heightIn(min = 48.dp).testTag("ielts_study_reload")) { Text("重新读取复盘") }
                     }
                     if ((review == null && answerView == null) || isSaving) {
                         Text(if (isSaving) "正在保存作答…" else "阅读已答 $completed / ${candidate.questionCount}",
@@ -174,6 +190,7 @@ internal fun IeltsPracticeScreen(
 private fun IeltsQuestionCard(number: Int, question: IeltsCandidateQuestion, response: String, editable: Boolean,
     review: IeltsAnswerItem?, submissionIdentity: String?, paragraphs: List<IeltsParagraph>, finishInput: () -> Unit,
     inputGesture: IeltsInputGesture,
+    studyEnabled: Boolean, feedback: IeltsStudyFeedback?, studyBusy: Boolean, onReflect: (IeltsStudyIntent?) -> Unit,
     onAnswer: (String) -> Unit) {
     val selectAnswer: (String) -> Unit = { finishInput(); onAnswer(it) }
     Surface(Modifier.fillMaxWidth().testTag("ielts_question_${question.questionId}"),
@@ -201,7 +218,10 @@ private fun IeltsQuestionCard(number: Int, question: IeltsCandidateQuestion, res
                         shape = RoundedCornerShape(8.dp))
                 }
             }
-            if (review != null) IeltsQuestionReview(question, review, requireNotNull(submissionIdentity), paragraphs)
+            if (review != null) {
+                IeltsQuestionReview(question, review, requireNotNull(submissionIdentity), paragraphs)
+                if (studyEnabled) IeltsReflection(question.questionId, feedback, studyBusy, onReflect)
+            }
         }
     }
 }

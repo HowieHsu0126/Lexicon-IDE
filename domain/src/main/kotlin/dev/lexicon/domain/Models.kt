@@ -136,6 +136,7 @@ interface AppRepository : FeedRepository, CaptureRepository {
     val baseline: ReadingBaselineRepository? get() = null
     val personalization: PersonalizationRepository? get() = null
     val ieltsPractice: IeltsPracticeRepository? get() = null
+    val ieltsStudy: IeltsStudyRepository? get() = null
     val ieltsGeneration: IeltsGenerationRepository? get() = null
     /** Fetches native text without recording an article open or starting reading assistance. */
     suspend fun prepareBaselineBody(id: String): ArticleBody? =

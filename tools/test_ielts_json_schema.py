@@ -216,11 +216,12 @@ class IeltsSchemaShapeTest(unittest.TestCase):
 
     def test_writing_draft_compiles_to_prompt_only_and_review_sees_final_text(self):
         candidate = copy.deepcopy(self.candidate)
-        candidate["writing_task2"]["prompt_draft"]["background"] = "Cities face competing spending priorities."
+        source_background = candidate["writing_task2"]["source_refs"][0]["quote"]
+        candidate["writing_task2"]["prompt_draft"]["background"] = source_background
         before = copy.deepcopy(candidate)
         self.assertTrue(valid(candidate, self.generation))
         compiled = compile_candidate(self.request, candidate, "generation")
-        expected = ("Cities face competing spending priorities.\n\n"
+        expected = (source_background + "\n\n" +
                     "Public funds should prioritise clean energy.\n\n"
                     "To what extent do you agree or disagree with this statement?")
         self.assertEqual(expected, compiled["writing_task2"]["prompt"])

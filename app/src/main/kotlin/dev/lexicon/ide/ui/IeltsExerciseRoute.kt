@@ -50,7 +50,9 @@ internal fun IeltsExerciseRoute(vm: IeltsExerciseViewModel, articles: List<Artic
         IeltsPracticeScreen(candidate, state.draftResponses, state.writingText, state.isSaving,
             state.answerView, state.error, vm::answer, vm::write, vm::submit,
             onBack = { vm.onBack(onBack) }, onRetry = vm::retry,
-            writingTask1Text = state.writingTask1Text, onWritingTask1 = vm::writeTask1)
+            writingTask1Text = state.writingTask1Text, onWritingTask1 = vm::writeTask1,
+            study = state.study, studyBusy = state.studyBusy, studyError = state.studyError,
+            onReflect = vm::reflect, onReloadStudy = vm::reloadStudy)
         return
     }
     var pairing by rememberSaveable { mutableStateOf(false) }
@@ -158,12 +160,19 @@ internal fun IeltsExerciseRoute(vm: IeltsExerciseViewModel, articles: List<Artic
                 }
             } }
             val generation = state.generation
+            state.studyError?.let { message -> item {
+                Text(message, Modifier.testTag("ielts_study_error"), color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall)
+                TextButton(onClick = vm::reloadStudy, enabled = !state.studyBusy,
+                    modifier = Modifier.heightIn(min = 48.dp).testTag("ielts_study_reload")) { Text("重新读取复盘") }
+            } }
             if (state.preparedArticleId != null) item {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(state.preparedTitle ?: titles[state.preparedArticleId] ?: "已保存的原文", style = MaterialTheme.typography.titleLarge)
                     Text("${state.preparedParagraphCount} 段 · 阅读 + 写作", style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant)
                     if (generation == null || generation.stage == IeltsGenerationStage.PREPARED) {
+                        IeltsStudyPreparation(state, vm::useBalancedStudy, vm::openAttempt)
                         Button(onClick = vm::generate, enabled = state.canGenerate && !state.busy,
                             modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("ielts_generate")) {
                             Text(if (state.connection.paired) "生成练习" else "连接电脑后生成")

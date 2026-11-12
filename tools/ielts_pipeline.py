@@ -95,7 +95,8 @@ def _legacy_stage_prompt(request, *, package=None, review_id=None, blind_review=
         'reduce this blind review responsibility. ')
     candidate_input_guidance = (
         'For generation, replace writing_task2.prompt with prompt_draft containing exactly background and '
-        'target_statement. Use background="" when no background is needed. Write one independently debatable '
+        'target_statement. Prefer background=""; a nonempty background must equal one exact writing source_refs quotation, '
+        'never a factual recap in your own words. Write one independently debatable '
         'policy or value claim in target_statement, as a single paragraph. A comparative or compound claim is '
         'allowed when it has one identifiable evaluative target; merely reporting opposing opinions is not '
         'such a claim. Keep contextual facts in background. Do not write the task instruction in either field. '
@@ -135,6 +136,9 @@ def _legacy_stage_prompt(request, *, package=None, review_id=None, blind_review=
               'no other kind of measurement occurred. Do not add only to a source that does not say only. '
               'When generating judgement questions, prefer explicit, unambiguous claims; avoid a negated-universal '
               'source unless the question preserves its quantifier and scope precisely. '
+              'If the request is a focused set of identifying_information items, arrange all items in forward passage order. '
+              'For NOT GIVEN, place the item near the related topic while retaining an empty source_refs list; '
+              'never invent a supporting range for absence. Distinct items must test distinct propositions. '
               'Remove unsupported claims or irrelevant quotations from explanations. '
               'Keep each prompt field to the actual question, statement or writing topic. The app already shows '
               'answer controls, word limits and writing time: do not repeat Choose the correct letter, TRUE/FALSE '

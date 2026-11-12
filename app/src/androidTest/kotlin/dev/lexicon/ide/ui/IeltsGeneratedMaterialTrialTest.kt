@@ -72,6 +72,7 @@ class IeltsGeneratedMaterialTrialTest {
     private var material: IeltsGatewayVerifiedPackage? = null
     private var artifactHash: String? = null
     private var variant = "day"
+    private var focusedInformation = false
     private var stage = "not_started"
     private var pixels48 = 0f
     private val shortWriting = "Public decisions should be judged by their practical benefits and their costs. " +
@@ -89,6 +90,7 @@ class IeltsGeneratedMaterialTrialTest {
         assumeTrue("Real-material UI trial is opt-in: set lexiconIeltsArtifactTrial=1.",
             arguments.getString("lexiconIeltsArtifactTrial") == "1")
         variant = arguments.getString("variant") ?: "day"
+        focusedInformation = arguments.getString("focusedInformationTrial") == "1"
         require(variant in setOf("day", "night")) { "variant must be day or night" }
         evidence = File(instrumentation.targetContext.filesDir,
             "validation-1.35.0/ielts-real-material/${System.currentTimeMillis()}-$variant-${UUID.randomUUID()}")
@@ -102,7 +104,7 @@ class IeltsGeneratedMaterialTrialTest {
             val validation = IeltsExerciseValidator.validatePackage(verified.request, verified.exercisePackage)
             checkProvenance(verified, validation)
             assertEquals("This trial exercises all four reading forms", 4, verified.exercisePackage.readingQuestions.size)
-            assertEquals(setOf("choice", "information", "view", "completion"),
+            assertEquals(if (focusedInformation) setOf("information") else setOf("choice", "information", "view", "completion"),
                 verified.exercisePackage.readingQuestions.map { when (it) {
                     is IeltsChoiceQuestion -> "choice"
                     is IeltsInformationQuestion -> "information"
@@ -182,7 +184,8 @@ class IeltsGeneratedMaterialTrialTest {
             assertNull(draft.submission)
             assertNull(draft.answerView())
             assertTrue(draft.revision > saved.revision)
-            checkpoint("all_reading_forms_and_short_writing_saved_before_exit")
+            checkpoint(if (focusedInformation) "focused_information_items_and_writing_saved_before_exit"
+                else "all_reading_forms_and_short_writing_saved_before_exit")
 
             stage = "draft_reopen_and_submit"
             reopenWorkspace(host)
@@ -453,6 +456,7 @@ class IeltsGeneratedMaterialTrialTest {
         File(evidence, "receipt.json").writeText(buildJsonObject {
             put("schema", "lexicon.ielts.material-ui-trial.v1"); put("status", status); put("stage", stage)
             reason?.let { put("reason", it) }; put("variant", variant); put("font_scale", 2)
+            put("focused_information_trial", focusedInformation)
             put("material_origin", "operator_supplied_harness_artifact"); put("synthetic_question_fallback_used", false)
             artifactHash?.let { put("artifact_bytes_sha256", it) }
             material?.let { v ->

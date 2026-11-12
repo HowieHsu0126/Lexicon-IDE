@@ -32,6 +32,10 @@ data class IeltsExerciseUiState(
     val error: String? = null,
     val historyError: String? = null,
     val pairingPreview: IeltsPairingPreview? = null,
+    val study: IeltsStudySnapshot? = null,
+    val studyRequest: IeltsStudyRequest? = null,
+    val studyError: String? = null,
+    val studyBusy: Boolean = false,
 )
 
 /** One screen coordinator. SavedStateHandle contains identities only; Room owns all prose. */
@@ -42,6 +46,7 @@ class IeltsExerciseViewModel(
     private val clock: () -> Long = System::currentTimeMillis,
     private val idFactory: () -> String = { "ielts-${UUID.randomUUID()}" },
     private val validationDispatcher: CoroutineDispatcher = Dispatchers.Default,
+    private val studyRepository: IeltsStudyRepository? = null,
 ) : ViewModel() {
     private val mutable = MutableStateFlow(IeltsExerciseUiState())
     val state: StateFlow<IeltsExerciseUiState> = mutable.asStateFlow()
@@ -56,6 +61,7 @@ class IeltsExerciseViewModel(
     private var operation: Job? = null
     private var debounce: Job? = null
     private var leaving: Job? = null
+    private var studyOperation: Job? = null
     private var inputLocks = 0
     private var initializing = true
     private data class Preparation(val article: Article, val body: ArticleBody, val aiAllowed: Boolean)
@@ -82,6 +88,7 @@ class IeltsExerciseViewModel(
         }) {
             val epoch = selectionEpoch
             loadConnection()
+            loadStudy()
             if (resolvePendingRegeneration(epoch)) return@launchOperation
             val attemptId = savedState.get<String>(ATTEMPT_KEY)
             val requestId = savedState.get<String>(REQUEST_KEY)
@@ -111,6 +118,7 @@ class IeltsExerciseViewModel(
         launchOperation(Retry.REFRESH, lockInput = true) {
             if (!flushDraft()) return@launchOperation
             prepared = null
+            loadStudy()
             val payload = withContext(validationDispatcher) {
                 require(aiAllowed) { "source_ai_disabled" }
                 require(article.id == body.articleId && IeltsGatewayProtocol.bodyHash(body.text) == body.contentHash)
@@ -121,8 +129,7 @@ class IeltsExerciseViewModel(
                     paragraphs = paragraphs.mapIndexed { index, paragraph ->
                         IeltsParagraph("p${index + 1}", paragraph.start, paragraph.endExclusive,
                             body.text.substring(paragraph.start, paragraph.endExclusive))
-                    }, readingRequests = listOf(IeltsChoiceRequest("q1"), IeltsInformationRequest("q2"),
-                        IeltsViewRequest("q3"), IeltsCompletionRequest("q4", 1, false)),
+                    }, readingRequests = IeltsStudyPolicy.requests(state.value.study?.profile?.focus?.kind),
                     writingTask2Request = IeltsWritingRequest("w2", IeltsWritingType.EXTENT_OF_AGREEMENT),
                     writingTask1Request = IeltsVisualRequest("w1").takeIf {
                         "source_numeric_visual_v1" in state.value.connection.health?.capabilities?.supportedWritingTask1Policies.orEmpty()
@@ -135,7 +142,8 @@ class IeltsExerciseViewModel(
             savedState.remove<String>(PENDING_REQUEST_KEY)
             mutable.update { it.copy(preparedArticleId = article.id, preparedTitle = article.title,
                 preparedParagraphCount = payload.paragraphs.size, generation = null, candidate = null,
-                draftResponses = emptyList(), writingText = "", writingTask1Text = null, answerView = null, dirty = false, error = null) }
+                draftResponses = emptyList(), writingText = "", writingTask1Text = null, answerView = null, dirty = false,
+                studyRequest = null, error = null) }
             updateCanGenerate()
         }
     }
@@ -143,12 +151,26 @@ class IeltsExerciseViewModel(
     fun generate() {
         val original = prepared ?: return
         if (!state.value.canGenerate) return
-        val payload = original.copy(writingTask1Request = IeltsVisualRequest("w1").takeIf {
-            "source_numeric_visual_v1" in state.value.connection.health?.capabilities?.supportedWritingTask1Policies.orEmpty()
-        })
-        prepared = payload
         val epoch = selectionEpoch
         launchOperation(Retry.REFRESH) {
+            val binding = studyRepository?.requestBinding(original.requestId)
+            val profile = binding?.profile ?: state.value.study?.profile
+            val payload = original.copy(readingRequests = if (profile != null) IeltsStudyPolicy.requests(profile.focus?.kind) else original.readingRequests,
+                writingTask1Request = IeltsVisualRequest("w1").takeIf {
+                    "source_numeric_visual_v1" in state.value.connection.health?.capabilities?.supportedWritingTask1Policies.orEmpty()
+                })
+            try {
+                if (studyRepository != null) {
+                    IeltsGatewayProtocol.requireSupported(payload, requireNotNull(state.value.connection.health))
+                    val frozen = studyRepository.freeze(payload, requireNotNull(profile).revision, clock())
+                    mutable.update { it.copy(studyRequest = frozen) }
+                }
+            } catch (failure: IeltsStudyFailure) {
+                mutable.update { it.copy(studyError = studyMessage(failure)) }
+                return@launchOperation
+            }
+            if (epoch != selectionEpoch) return@launchOperation
+            prepared = payload
             val result = generations.generate(payload)
             if (epoch != selectionEpoch) return@launchOperation
             showGeneration(result)
@@ -178,6 +200,7 @@ class IeltsExerciseViewModel(
             // generate() saves before its single POST. Retain both identities until
             // a read confirms that the new record is durable; errors keep the old selection.
             savedState[PENDING_REQUEST_KEY] = replacement.requestId
+            studyRepository?.inherit(original.submit, replacement, clock())
             val result = generations.generate(replacement)
             if (epoch != selectionEpoch) return@launchOperation
             if (result.submit != replacement) throw IeltsGenerationFailure(IeltsGenerationIssue.INVALID_RESPONSE)
@@ -306,7 +329,8 @@ class IeltsExerciseViewModel(
         selectionEpoch++; prepared = null; selectedGeneration = null; savedPractice = null; editSequence = 0
         savedState.remove<String>(REQUEST_KEY); savedState.remove<String>(ATTEMPT_KEY); savedState.remove<String>(PENDING_REQUEST_KEY)
         mutable.update { it.copy(preparedArticleId = null, preparedTitle = null, preparedParagraphCount = 0, canGenerate = false, canRegenerate = false,
-            generation = null, candidate = null, draftResponses = emptyList(), writingText = "", writingTask1Text = null, answerView = null, dirty = false, error = null) }
+            generation = null, candidate = null, draftResponses = emptyList(), writingText = "", writingTask1Text = null, answerView = null,
+            studyRequest = null, dirty = false, error = null) }
         onCleared()
     }
     fun onBack(onClosed: () -> Unit) = clearSelection { discardPairing(); onClosed() }
@@ -420,6 +444,77 @@ class IeltsExerciseViewModel(
         mutable.update { it.copy(connection = connection) }
         updateCanGenerate()
     }
+
+    /** Feedback is independent from immutable answers. Failures do not block reading a saved exercise. */
+    private suspend fun loadStudy(attemptId: String? = null) {
+        val repository = studyRepository ?: return
+        val epoch = selectionEpoch
+        try {
+            val snapshot = repository.load(attemptId)
+            if (epoch == selectionEpoch) mutable.update { it.copy(study = snapshot, studyError = null) }
+        } catch (cancelled: CancellationException) { throw cancelled }
+        catch (failure: Exception) { if (epoch == selectionEpoch) mutable.update { it.copy(study = null, studyError = studyMessage(failure)) } }
+    }
+
+    fun reflect(questionId: String, intent: IeltsStudyIntent?) {
+        val repository = studyRepository ?: return
+        val current = savedPractice?.takeIf { it.submitted } ?: return
+        val snapshot = state.value.study ?: return
+        if (state.value.busy || state.value.isSaving || studyOperation?.isActive == true) return
+        if (current.exercise.readingQuestions.none { it.questionId == questionId }) return
+        val epoch = selectionEpoch
+        val revision = snapshot.feedback.singleOrNull { it.questionId == questionId && it.attemptId == current.attemptId }?.revision ?: 0
+        studyOperation = viewModelScope.launch {
+            mutable.update { it.copy(studyBusy = true, studyError = null) }
+            try {
+                val next = repository.reflect(current.attemptId, questionId, intent, revision, snapshot.profile.revision, clock())
+                if (epoch == selectionEpoch && savedPractice?.attemptId == current.attemptId) mutable.update { it.copy(study = next) }
+            } catch (cancelled: CancellationException) { throw cancelled }
+            catch (failure: Exception) {
+                if (epoch == selectionEpoch) mutable.update { it.copy(studyError = studyMessage(failure)) }
+            } finally {
+                studyOperation = null; mutable.update { it.copy(studyBusy = false) }; updateCanGenerate()
+            }
+        }
+        updateCanGenerate()
+    }
+
+    fun useBalancedStudy() {
+        val repository = studyRepository ?: return
+        val profile = state.value.study?.profile ?: return
+        if (state.value.busy || state.value.studyBusy || state.value.studyRequest != null) return
+        val epoch = selectionEpoch
+        studyOperation = viewModelScope.launch {
+            mutable.update { it.copy(studyBusy = true, studyError = null) }
+            try {
+                val next = repository.useBalanced(profile.revision, clock())
+                if (epoch == selectionEpoch) mutable.update { it.copy(study = next) }
+            } catch (cancelled: CancellationException) { throw cancelled }
+            catch (failure: Exception) { if (epoch == selectionEpoch) mutable.update { it.copy(studyError = studyMessage(failure)) } }
+            finally { studyOperation = null; mutable.update { it.copy(studyBusy = false) }; updateCanGenerate() }
+        }
+        updateCanGenerate()
+    }
+
+    fun reloadStudy() {
+        if (state.value.busy || state.value.studyBusy) return
+        val id = savedPractice?.takeIf { it.submitted }?.attemptId
+        val epoch = selectionEpoch
+        studyOperation = viewModelScope.launch {
+            mutable.update { it.copy(studyBusy = true) }
+            try {
+                val next = studyRepository?.load(id)
+                if (epoch == selectionEpoch) mutable.update { it.copy(study = next, studyError = null) }
+            } catch (cancelled: CancellationException) { throw cancelled }
+            catch (failure: Exception) { if (epoch == selectionEpoch) mutable.update { it.copy(studyError = studyMessage(failure)) } }
+            finally { studyOperation = null; mutable.update { it.copy(studyBusy = false) }; updateCanGenerate() }
+        }
+    }
+
+    private fun studyMessage(error: Exception): String = when ((error as? IeltsStudyFailure)?.code) {
+        IeltsStudyFailureCode.CONFLICT -> "复盘记录已更新，请重新读取后选择"
+        else -> "复盘暂未保存，已有作答保留。请重新读取后选择"
+    }
     private fun mayRegenerate(value: IeltsGenerationRecord): Boolean {
         val job = value.job ?: return false
         return value.dispatchClaimed && job.requestId == value.requestId && value.packageHash == null && job.processReaped == 1 &&
@@ -473,6 +568,7 @@ class IeltsExerciseViewModel(
         savedState[ATTEMPT_KEY] = value.attemptId
         mutable.update { it.copy(candidate = views.first, draftResponses = value.draftResponses.toList(),
             writingText = value.writingText, writingTask1Text = value.writingTask1Text, answerView = views.second, dirty = false, error = null, canGenerate = false, canRegenerate = false) }
+        loadStudy(value.attemptId.takeIf { value.submitted })
     }
     private fun showGeneration(value: IeltsGenerationRecord) {
         selectedGeneration = value
@@ -485,7 +581,8 @@ class IeltsExerciseViewModel(
     private fun updateCanGenerate() {
         mutable.update { current ->
             val generation = current.generation
-            current.copy(canGenerate = prepared != null && current.connection.paired && !current.busy && !current.isSaving &&
+            current.copy(canGenerate = prepared != null && current.connection.paired && !current.busy && !current.isSaving && !current.studyBusy &&
+                (studyRepository == null || (current.study != null && current.studyError == null)) &&
                 current.candidate == null && (generation == null || generation.stage == IeltsGenerationStage.PREPARED),
                 canRegenerate = current.connection.paired && current.candidate == null &&
                     savedState.get<String>(PENDING_REQUEST_KEY) == null && selectedGeneration?.let { record ->
@@ -517,6 +614,7 @@ class IeltsExerciseViewModel(
         mutable.update { it.copy(isSaving = inputLocks > 0) }; updateCanGenerate()
     }
     private fun safeMessage(failure: Exception): String = when (failure) {
+        is IeltsStudyFailure -> studyMessage(failure)
         is IeltsGenerationFailure -> ieltsGenerationIssueText(failure.issue)
         is IeltsGatewaySubmissionUncertain -> ieltsGenerationIssueText(IeltsGenerationIssue.OUTCOME_UNKNOWN)
         is IeltsGatewayFailure -> when (failure.code) {

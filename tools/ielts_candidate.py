@@ -137,6 +137,29 @@ def _append(refs, ref, path):
     refs.append(copy.deepcopy(ref))
 
 
+def validate_focused_sequence(request, candidate):
+    """Focused information sets should follow known evidence forward.
+
+    This is a new-generation reading-flow rule, not a rewrite of archived
+    questions. NOT GIVEN has no supporting range and is deliberately skipped;
+    its placement still needs a semantic review against the full passage.
+    """
+    wanted = request["reading_requests"]
+    if len(wanted) < 2 or any(q["type"] != "identifying_information" for q in wanted):
+        return
+    previous = -1
+    for index, item in enumerate(candidate["reading_questions"]):
+        if item.get("answer") == "not_given":
+            continue
+        refs = contract._references(item.get("source_refs"), request,
+                                    "candidate.reading_questions[{}].source_refs".format(index))
+        anchor = min(ref["start"] for ref in refs)
+        if anchor < previous:
+            _fail("candidate_focused_evidence_order", "candidate.reading_questions[{}]".format(index),
+                  "Arrange this focused information set in forward passage order; rebuild complete question objects with the requested IDs. Never change an answer just to fix order.")
+        previous = anchor
+
+
 def _generation_writing_prompt(request, candidate):
     """Compile only an explicit draft; never infer a target from a free prompt."""
     path = "candidate.writing_task2"
@@ -148,6 +171,10 @@ def _generation_writing_prompt(request, candidate):
     common = {"task_id", "task_type", "minimum_words", "suggested_minutes", "source_refs"}
     if "prompt_draft" not in writing:
         contract._object(writing, path, common | {"prompt"})
+        # Revalidating a compiled draft must enforce the same source-background rule.
+        pieces = writing["prompt"].split("\n\n") if isinstance(writing["prompt"], str) else []
+        if len(pieces) >= 3 and pieces[-1] == WRITING_AGREEMENT_INSTRUCTION:
+            _writing_background("\n\n".join(pieces[:-2]), writing["source_refs"], path)
         return  # Legacy and already compiled prompt bytes are preserved.
     contract._object(writing, path, common | {"prompt_draft"})
     if (request["writing_task2_request"]["task_type"] != "extent_of_agreement" or
@@ -166,8 +193,15 @@ def _generation_writing_prompt(request, candidate):
     # spaces are not repaired. A compound target still needs independent review.
     prompt = "\n\n".join(([background] if background else []) + [target, WRITING_AGREEMENT_INSTRUCTION])
     contract._text(prompt, path + ".prompt", MAX_WRITING_PROMPT_UNITS)
+    _writing_background(background, writing["source_refs"], path)
     del writing["prompt_draft"]
     writing["prompt"] = prompt
+
+
+def _writing_background(background, refs, path):
+    if background and not any(ref.get("quote") == background for ref in refs):
+        _fail("candidate_writing_background_not_extractive", path + ".prompt_draft.background",
+              "Use an empty background or one exact source_refs quotation. Do not paraphrase institutions, locations or factual context; keep the debatable target self-contained.")
 
 
 def _generation_visual_numbers(request, visual):
@@ -274,4 +308,6 @@ def compile_candidate(request, candidate, mode):
                     _append(refs, context, where + ".source_refs")
                     _append(refs, ref, where + ".source_refs")
                     alternative["source_ref"] = copy.deepcopy(ref)
+    if mode == "generation":
+        validate_focused_sequence(request, result)
     return result

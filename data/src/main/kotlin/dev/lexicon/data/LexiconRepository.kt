@@ -44,6 +44,7 @@ class LexiconRepository(context: Context, database: LexiconDatabase? = null, lea
         hasKey = { !keyStore.read().isNullOrBlank() }, sourceAllowed = ::readingSourceAllowed)
     override val baseline: ReadingBaselineRepository = LocalReadingBaselineRepository(db, speedReading)
     override val ieltsPractice: IeltsPracticeRepository = LocalIeltsPracticeRepository(db)
+    override val ieltsStudy: IeltsStudyRepository = LocalIeltsStudyRepository(db)
     override val ieltsGeneration: IeltsGenerationRepository = LocalIeltsGenerationRepository(db, IeltsGatewaySettings(app), ieltsPractice)
     private val vocabularyData = LocalVocabularyLearningRepository(db,
         analyze = { analyzeCaptureImpl(it, deep = false, persistInput = false) },

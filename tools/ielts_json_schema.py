@@ -225,7 +225,7 @@ def generation_schema(request: Any) -> Dict[str, Any]:
         "writing_task2": _object({
             "task_id": _constant(writing["task_id"]), "task_type": _constant(writing["task_type"]),
             "prompt_draft": _object({
-                "background": {"type": "string", "description": "0–1800 UTF-16 units. Use an empty string when no background is needed. No URLs. Context only; do not add a task instruction."},
+                "background": {"type": "string", "description": "0–1800 UTF-16 units. Prefer empty. A nonempty value must exactly equal one writing source_refs quotation. Do not paraphrase factual context, names or institutions. No URLs or task instruction."},
                 "target_statement": _text(1800, "One nonempty paragraph containing a complete proposition to evaluate, not a report that two opinions exist. No CR, LF, tab, U+0085, U+2028 or U+2029. A comparison or compound policy claim may form one proposition. Do not add the task instruction."),
             }, "Generation input only; do not also provide prompt. The host joins the nonempty background, target_statement, and 'To what extent do you agree or disagree with this statement?' with two newlines. The compiled prompt must fit 1800 UTF-16 units. Text is preserved; structural assembly does not prove a clear evaluation target."),
             "minimum_words": _constant(250), "suggested_minutes": _constant(40),

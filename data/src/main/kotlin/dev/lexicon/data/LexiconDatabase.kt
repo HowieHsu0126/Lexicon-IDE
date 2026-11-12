@@ -81,6 +81,7 @@ data class JobRow(@PrimaryKey val id: String, val status: String, val updatedAt:
     version = 1, exportSchema = true,
 )
 abstract class LexiconDatabase : RoomDatabase() {
+    abstract fun ieltsStudyDao(): IeltsStudyDao
     abstract fun ieltsPracticeDao(): IeltsPracticeDao
     abstract fun reviewHistoryDao(): ReviewHistoryDao
     abstract fun captureInboxDao(): CaptureInboxDao

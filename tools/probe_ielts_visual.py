@@ -15,6 +15,7 @@ from test_ielts_explanation_review import result_fixture
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--malformed-generation-once',action='store_true')
+    parser.add_argument('--extractive-writing-background',action='store_true')
     parser.add_argument('--out',type=Path,required=True);parser.add_argument('--corpus',type=Path,required=True)
     args=parser.parse_args();args.out.mkdir(parents=True,exist_ok=False,mode=0o700)
     request,package,review=visual_fixture()
@@ -35,6 +36,8 @@ def main():
         else:
             value=result_fixture(request,generated,blind);value['review_id']=review_id
         if mode!='explanation_review':value=locator_input(request,value,mode)
+        if mode=='generation' and args.extractive_writing_background:
+            value['writing_task2']['prompt_draft']['background']=value['writing_task2']['source_refs'][0]['quote']
         calls=0
         def transport(raw):
             nonlocal calls
@@ -56,7 +59,8 @@ def main():
         passed=output['package']['writing_task1']['status']=='available' and output['provenance']['real_provider_request_count']==0
     report={'schema':'lexicon.ielts.visual-native-probe.v1','status':'passed' if passed else 'failed','job':status,
         'actual_installed_harness':True,'real_provider_calls':0,'runs':runs,'runtime_receipts':jobs.receipts(job['id']),
-        'semantic_quality_measured':False,'source_sha256':{p.name:sha256_file(p) for p in Path(__file__).parent.glob('*.py')}}
+        'semantic_quality_measured':False,'extractive_writing_background':args.extractive_writing_background,
+        'source_sha256':{p.name:sha256_file(p) for p in Path(__file__).parent.glob('*.py')}}
     write_json_new(args.out/'receipt.json',report)
     print(json.dumps({k:v for k,v in report.items() if k not in ['runtime_receipts','source_sha256']}))
     return 0 if passed else 1

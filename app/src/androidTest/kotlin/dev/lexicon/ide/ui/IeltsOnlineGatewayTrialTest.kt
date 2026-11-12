@@ -49,6 +49,8 @@ class IeltsOnlineGatewayTrialTest {
     private var packageHash: String? = null
     private var certificateHash: String? = null
     private var knownRequestReplay = false
+    private var studyFocus: IeltsReadingType? = null
+    private var studyOriginPackage: String? = null
     private val steps = mutableListOf<String>()
     private val screenshots = mutableListOf<JsonObject>()
     private val writing = "A careful local trial can show whether a policy works in practice. " +
@@ -94,7 +96,32 @@ class IeltsOnlineGatewayTrialTest {
                 .setQueryCoroutineContext(Dispatchers.IO).build().also { database = it }
             val practices = LocalIeltsPracticeRepository(db)
             val generations = LocalIeltsGenerationRepository(db, settings, practices)
-            val host = Host(generations, practices, originalRequestId)
+            val study = InstrumentationRegistry.getArguments().getString("studyFocus")?.let { selected ->
+                val kind = IeltsReadingType.valueOf(selected)
+                val file = File(context.filesDir, "ielts-trial-input/verified-package.json")
+                require(file.isFile && file.length() <= IeltsGatewayProtocol.MAX_RESPONSE_BYTES)
+                val prior = IeltsGatewayProtocol.decodeVerifiedPackage(file.readText())
+                val result = IeltsExerciseValidator.validatePackage(prior.request, prior.exercisePackage)
+                studyOriginPackage = result.packageSha256
+                val repo = LocalIeltsStudyRepository(db)
+                runBlocking {
+                    val hash = practices.cache(prior.request, prior.exercisePackage)
+                    val start = practices.begin(hash, "study-origin-${UUID.randomUUID()}", System.currentTimeMillis())
+                    val responses = prior.exercisePackage.readingQuestions.map { q -> IeltsResponse(q.questionId, when(q) {
+                        is IeltsChoiceQuestion -> q.answer.name
+                        is IeltsInformationQuestion -> q.answer.wire
+                        is IeltsViewQuestion -> q.answer.wire
+                        is IeltsCompletionQuestion -> q.answer
+                    }) }
+                    val draft = practices.saveWritingDrafts(start.attemptId, start.revision, responses, "", if (prior.exercisePackage.writingTask1.task == null) null else "", System.currentTimeMillis())
+                    practices.submit(start.attemptId, draft.revision, System.currentTimeMillis())
+                    val question = prior.exercisePackage.readingQuestions.first { IeltsStudyPolicy.kind(it) == kind }
+                    repo.reflect(start.attemptId, question.questionId, IeltsStudyIntent.PRACTICE_AGAIN, 0, 0, System.currentTimeMillis())
+                }
+                studyFocus = kind
+                repo
+            }
+            val host = Host(generations, practices, originalRequestId, study)
             instrumentation.runOnMainSync { host.recreate() }
             compose.setContent { host.Content() }
             compose.waitUntil(10_000) { !host.model.state.value.busy }
@@ -120,6 +147,12 @@ class IeltsOnlineGatewayTrialTest {
             workspace("ielts_generate").assertIsEnabled().performClick()
             compose.waitUntil(45_000) { host.model.state.value.generation != null && !host.model.state.value.busy }
             requestId = requireNotNull(host.model.state.value.generation?.requestId)
+            study?.let { repository ->
+                val binding = runBlocking { requireNotNull(repository.requestBinding(requireNotNull(requestId))) }
+                assertEquals(studyFocus, binding.profile.focus?.kind)
+                assertEquals(studyOriginPackage, binding.profile.focus?.packageHash)
+                checkpoint("learner_selected_form_bound_before_dispatch")
+            }
             stage = "waiting_for_original_host_request"; receipt("running")
             compose.waitUntil(660_000) {
                 host.model.state.value.candidate != null || host.model.state.value.generation?.stage in
@@ -183,7 +216,7 @@ class IeltsOnlineGatewayTrialTest {
     }
 
     private inner class Host(val generations: IeltsGenerationRepository, val practices: IeltsPracticeRepository,
-        val originalRequestId: String?) {
+        val originalRequestId: String?, val study: IeltsStudyRepository? = null) {
         var vm by mutableStateOf<IeltsExerciseViewModel?>(null)
         var visible by mutableStateOf(true)
         val model get() = requireNotNull(vm)
@@ -191,7 +224,7 @@ class IeltsOnlineGatewayTrialTest {
         fun recreate() {
             store?.clear(); store = ViewModelStore().also { stores += it }
             vm = IeltsExerciseViewModel(generations, practices, SavedStateHandle(),
-                idFactory = { originalRequestId ?: "ielts-${UUID.randomUUID()}" }).also { store!!.put("online-trial", it) }
+                idFactory = { originalRequestId ?: "ielts-${UUID.randomUUID()}" }, studyRepository = study).also { store!!.put("online-trial", it) }
             visible = true
         }
         @Composable fun Content() {
@@ -241,6 +274,7 @@ class IeltsOnlineGatewayTrialTest {
             put("transport", "adb_reverse_loopback"); put("provider_execution", "foreground_mac_harness_host")
             put("real_file_picker", true); put("source_kind", "self_authored_fictional")
             put("reuses_explicitly_completed_host_request", knownRequestReplay)
+            put("study_focus", studyFocus?.name); put("study_origin_package_sha256", studyOriginPackage)
             put("answer_entry", "arbitrary_valid_test_answers"); put("human_comprehension_measured", false)
             put("official_band_score_assigned", false); put("viewmodels_created", stores.size)
             putJsonArray("completed_steps") { steps.forEach { add(it) } }

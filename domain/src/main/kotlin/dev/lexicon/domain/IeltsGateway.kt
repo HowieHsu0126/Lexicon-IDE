@@ -249,6 +249,7 @@ object IeltsGatewayProtocol {
         require(request.requestId == original.requestId && request.articleId == original.articleId && request.bodyHash == bodyHash(original.body))
         require(request.paragraphs == original.paragraphs && request.readingRequests == original.readingRequests && request.writingTask2Request == original.writingTask2Request && request.writingTask1Request == original.writingTask1Request)
         val receipt = IeltsExerciseValidator.validatePackage(request, value.exercisePackage)
+        IeltsStudyPolicy.validateFocusedSequence(request, value.exercisePackage)
         val p = value.provenance
         require(p.kind == "deepseek_harness" && p.runtimeVersion == health.capabilities.runtimeVersion)
         IeltsExerciseValidator.validId(p.generationSessionId); IeltsExerciseValidator.validId(p.reviewSessionId)

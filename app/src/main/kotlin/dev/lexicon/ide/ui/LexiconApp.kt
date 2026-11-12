@@ -101,7 +101,8 @@ fun LexiconApp(
         viewModel(factory = remember(repository) {
             object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST") override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T =
-                    IeltsExerciseViewModel(requireNotNull(repository.ieltsGeneration), requireNotNull(repository.ieltsPractice), extras.createSavedStateHandle()) as T
+                    IeltsExerciseViewModel(requireNotNull(repository.ieltsGeneration), requireNotNull(repository.ieltsPractice),
+                        extras.createSavedStateHandle(), studyRepository = repository.ieltsStudy) as T
             }
         }) else null
     val speedLibrary by (speedVm?.library ?: kotlinx.coroutines.flow.flowOf(SpeedLibrary())).collectAsStateWithLifecycle(initialValue = SpeedLibrary())
